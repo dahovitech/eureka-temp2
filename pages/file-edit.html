@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Modifier un dossier - Eureka CRM">
+  <meta name="author" content="jprud67">
+  <title>Modifier Dossier - Eureka CRM</title>
+  
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+  <link href="../assets/css/variables.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/components.css" rel="stylesheet">
+  
+  <style>
+    .tabs-container {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    
+    .tabs-navigation {
+      position: sticky;
+      top: 0;
+      background: white;
+      border-bottom: 2px solid #e9ecef;
+      z-index: 100;
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    
+    .tab-button {
+      flex: 1;
+      min-width: 150px;
+      padding: 18px 20px;
+      border: none;
+      background: white;
+      color: #6c757d;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .tab-button:hover {
+      background: #f8f9fa;
+      color: #292A5F;
+    }
+    
+    .tab-button.active {
+      color: #292A5F;
+      background: #fffef5;
+    }
+    
+    .tab-button.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #292A5F 0%, #F3E600 100%);
+    }
+    
+    .tab-button i {
+      font-size: 1.1rem;
+    }
+    
+    .tab-validation-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #6c757d;
+      margin-left: 8px;
+    }
+    
+    .tab-validation-indicator.valid {
+      background: #28a745;
+    }
+    
+    .tab-validation-indicator.invalid {
+      background: #dc3545;
+    }
+    
+    .tab-content-wrapper {
+      padding: 30px;
+    }
+    
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .tab-pane.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #292A5F;
+      margin-bottom: 25px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #F3E600;
+    }
+    
+    .required-field::after {
+      content: " *";
+      color: #dc3545;
+    }
+    
+    .form-label {
+      font-weight: 500;
+      color: #495057;
+      margin-bottom: 8px;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #F3E600;
+      box-shadow: 0 0 0 0.2rem rgba(243, 230, 0, 0.25);
+    }
+    
+    .client-card {
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      padding: 15px;
+      background: #f8f9fa;
+      margin-bottom: 15px;
+    }
+    
+    .product-item {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border: 1px solid #dee2e6;
+    }
+    
+    .sticky-actions {
+      position: sticky;
+      bottom: 0;
+      background: white;
+      padding: 20px 30px;
+      border-top: 2px solid #e9ecef;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 99;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+    }
+    
+    .btn-save {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      font-weight: 600;
+      border-radius: 8px;
+    }
+    
+    .btn-save:hover {
+      background: linear-gradient(135deg, #218838 0%, #1aa179 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+    
+    .danger-zone {
+      background: #fff5f5;
+      border: 2px solid #ffc9c9;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+    
+    .danger-zone h6 {
+      color: #dc3545;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    
+    .status-badge.nouveau {
+      background: #e7f1ff;
+      color: #0066cc;
+    }
+    
+    .status-badge.negociation {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-badge.gagne {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .status-badge.perdu {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    .timeline-item {
+      padding: 15px;
+      border-left: 3px solid #F3E600;
+      margin-bottom: 15px;
+      background: #f8f9fa;
+      border-radius: 0 8px 8px 0;
+    }
+    
+    .document-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      background: white;
+    }
+    
+    .document-item:hover {
+      background: #f8f9fa;
+    }
+    
+    @media (max-width: 768px) {
+      .tab-button {
+        min-width: 120px;
+        font-size: 0.9rem;
+        padding: 15px 12px;
+      }
+      
+      .tab-content-wrapper {
+        padding: 20px 15px;
+      }
+      
+      .sticky-actions {
+        padding: 15px;
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="../index.html" class="logo-link">
+        <img src="../assets/img/logo-light.png" alt="Eureka CRM" class="logo">
+      </a>
+      <button class="btn-close-sidebar d-lg-none" id="closeSidebar">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <ul class="sidebar-menu">
+        <li class="nav-item">
+          <a href="../index.html" class="nav-link">
+            <i class="fas fa-chart-pie"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="files-list.html" class="nav-link active">
+            <i class="fas fa-folder-open"></i>
+            <span>Dossiers</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="customers-list.html" class="nav-link">
+            <i class="fas fa-users"></i>
+            <span>Clients</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="documents.html" class="nav-link">
+            <i class="fas fa-file-alt"></i>
+            <span>Documents</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="notes.html" class="nav-link">
+            <i class="fas fa-sticky-note"></i>
+            <span>Notes</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="reminders.html" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Rappels</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="rewards.html" class="nav-link">
+            <i class="fas fa-trophy"></i>
+            <span>Rewards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="reports.html" class="nav-link">
+            <i class="fas fa-chart-bar"></i>
+            <span>Rapports</span>
+          </a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-divider"></div>
+      
+      <ul class="sidebar-menu">
+        <li class="nav-item">
+          <a href="settings.html" class="nav-link">
+            <i class="fas fa-cog"></i>
+            <span>Paramètres</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="auth/login.html" class="nav-link">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Déconnexion</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="btn-toggle-sidebar d-lg-none" id="toggleSidebar">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" class="form-control" placeholder="Rechercher...">
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <div class="header-item">
+          <button class="btn-header" id="notificationsBtn">
+            <i class="fas fa-bell"></i>
+            <span class="badge-count">3</span>
+          </button>
+        </div>
+        
+        <div class="header-item">
+          <button class="btn-header" id="messagesBtn">
+            <i class="fas fa-envelope"></i>
+            <span class="badge-count">5</span>
+          </button>
+        </div>
+        
+        <div class="header-item dropdown">
+          <button class="btn-profile dropdown-toggle" data-bs-toggle="dropdown">
+            <img src="https://ui-avatars.com/api/?name=Jean+Dupont&background=292A5F&color=F3E600" alt="User" class="avatar">
+            <span class="user-name">Jean Dupont</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="auth/profile.html">
+              <i class="fas fa-user me-2"></i>Mon Profil
+            </a></li>
+            <li><a class="dropdown-item" href="settings.html">
+              <i class="fas fa-cog me-2"></i>Paramètres
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="auth/login.html">
+              <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+            </a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Page Content -->
+    <div class="page-content">
+      <div class="container-fluid">
+        
+        <!-- Page Header -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-title"><i class="fas fa-folder-edit me-2"></i>Modifier Dossier #DS-2024-0042</h1>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="files-list.html">Dossiers</a></li>
+                <li class="breadcrumb-item active">Modifier</li>
+              </ol>
+            </nav>
+          </div>
+          <div class="d-flex gap-2">
+            <span class="status-badge negociation">En Négociation</span>
+            <a href="files-list.html" class="btn btn-outline-secondary">
+              <i class="fas fa-arrow-left me-2"></i>Retour
+            </a>
+          </div>
+        </div>
+
+        <!-- Tabs Container -->
+        <form id="fileEditForm" novalidate>
+          <div class="tabs-container">
+            
+            <!-- Tabs Navigation -->
+            <div class="tabs-navigation">
+              <button type="button" class="tab-button active" data-tab="infos" onclick="switchTab('infos')">
+                <i class="fas fa-info-circle"></i>
+                <span>Informations</span>
+                <span class="tab-validation-indicator valid" id="indicator-infos"></span>
+              </button>
+              
+              <button type="button" class="tab-button" data-tab="products" onclick="switchTab('products')">
+                <i class="fas fa-box"></i>
+                <span>Produits</span>
+                <span class="tab-validation-indicator valid" id="indicator-products"></span>
+              </button>
+              
+              <button type="button" class="tab-button" data-tab="commercial" onclick="switchTab('commercial')">
+                <i class="fas fa-user-tie"></i>
+                <span>Commercial</span>
+                <span class="tab-validation-indicator valid" id="indicator-commercial"></span>
+              </button>
+              
+              <button type="button" class="tab-button" data-tab="status" onclick="switchTab('status')">
+                <i class="fas fa-tasks"></i>
+                <span>Statut & Suivi</span>
+                <span class="tab-validation-indicator" id="indicator-status"></span>
+              </button>
+              
+              <button type="button" class="tab-button" data-tab="documents" onclick="switchTab('documents')">
+                <i class="fas fa-file-alt"></i>
+                <span>Documents</span>
+                <span class="tab-validation-indicator" id="indicator-documents"></span>
+              </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content-wrapper">
+              
+              <!-- Tab 1: Informations Générales -->
+              <div class="tab-pane active" id="tab-infos">
+                <h5 class="section-title">Informations Générales</h5>
+                
+                <!-- Client Info -->
+                <div class="client-card">
+                  <div class="d-flex align-items-center">
+                    <div class="me-3">
+                      <div class="avatar-lg bg-primary-light text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="fas fa-building fa-2x"></i>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="mb-1">SARL Martin Énergies</h5>
+                      <p class="mb-1 text-muted small">
+                        <i class="fas fa-id-card me-2"></i>SIRET: 85234567890123
+                      </p>
+                      <p class="mb-0 text-muted small">
+                        <i class="fas fa-user me-2"></i>Contact: Jean Martin
+                      </p>
+                    </div>
+                    <div>
+                      <a href="#" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-eye me-2"></i>Voir fiche client
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="row mt-4">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label required-field">Numéro de dossier</label>
+                    <input type="text" class="form-control" name="file_number" value="DS-2024-0042" readonly>
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label required-field">Date de création</label>
+                    <input type="date" class="form-control" name="created_date" value="2024-01-15" readonly>
+                  </div>
+                </div>
+                
+                <div class="mb-3">
+                  <label class="form-label">Description du dossier</label>
+                  <textarea class="form-control" name="description" rows="4" placeholder="Description générale du projet...">Installation de 20 panneaux solaires photovoltaïques pour un restaurant. Projet incluant l'audit énergétique et l'installation complète.</textarea>
+                </div>
+              </div>
+
+              <!-- Tab 2: Produits/Services -->
+              <div class="tab-pane" id="tab-products">
+                <h5 class="section-title">Produits et Services</h5>
+                
+                <div id="products-container">
+                  <!-- Product 1 -->
+                  <div class="product-item" data-product-index="1">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label required-field">Produit/Service</label>
+                        <select class="form-select" name="product_1_type" required>
+                          <option value="">Sélectionner...</option>
+                          <option value="panneaux_solaires" selected>Panneaux Solaires</option>
+                          <option value="pompe_chaleur">Pompe à Chaleur</option>
+                          <option value="isolation">Isolation Thermique</option>
+                          <option value="chaudiere">Chaudière</option>
+                          <option value="climatisation">Climatisation</option>
+                          <option value="audit_energie">Audit Énergétique</option>
+                          <option value="autre">Autre</option>
+                        </select>
+                      </div>
+                      
+                      <div class="col-md-3 mb-3">
+                        <label class="form-label required-field">Quantité</label>
+                        <input type="number" class="form-control" name="product_1_qty" value="20" min="1" required>
+                      </div>
+                      
+                      <div class="col-md-3 mb-3">
+                        <label class="form-label required-field">Prix unitaire (€)</label>
+                        <input type="number" class="form-control" name="product_1_price" value="350.00" step="0.01" required>
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label class="form-label">Description</label>
+                      <textarea class="form-control" name="product_1_desc" rows="2">Panneaux solaires haute performance 400W</textarea>
+                    </div>
+                  </div>
+                  
+                  <!-- Product 2 -->
+                  <div class="product-item" data-product-index="2">
+                    <div class="d-flex justify-content-end mb-2">
+                      <button type="button" class="btn btn-sm btn-danger" onclick="removeProduct(2)">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Produit/Service</label>
+                        <select class="form-select" name="product_2_type">
+                          <option value="">Sélectionner...</option>
+                          <option value="panneaux_solaires">Panneaux Solaires</option>
+                          <option value="pompe_chaleur">Pompe à Chaleur</option>
+                          <option value="isolation">Isolation Thermique</option>
+                          <option value="chaudiere">Chaudière</option>
+                          <option value="climatisation">Climatisation</option>
+                          <option value="audit_energie" selected>Audit Énergétique</option>
+                          <option value="autre">Autre</option>
+                        </select>
+                      </div>
+                      
+                      <div class="col-md-3 mb-3">
+                        <label class="form-label">Quantité</label>
+                        <input type="number" class="form-control" name="product_2_qty" value="1" min="1">
+                      </div>
+                      
+                      <div class="col-md-3 mb-3">
+                        <label class="form-label">Prix unitaire (€)</label>
+                        <input type="number" class="form-control" name="product_2_price" value="500.00" step="0.01">
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label class="form-label">Description</label>
+                      <textarea class="form-control" name="product_2_desc" rows="2">Audit énergétique complet du bâtiment</textarea>
+                    </div>
+                  </div>
+                </div>
+                
+                <button type="button" class="btn btn-outline-primary" onclick="addProduct()">
+                  <i class="fas fa-plus me-2"></i>Ajouter un produit
+                </button>
+                
+                <!-- Total -->
+                <div class="mt-4 p-3 bg-light rounded">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-bold">Total estimé :</span>
+                    <span class="fs-4 fw-bold text-primary" id="totalAmount">7 500.00 €</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 3: Commercial -->
+              <div class="tab-pane" id="tab-commercial">
+                <h5 class="section-title">Commercial Responsable</h5>
+                
+                <div class="mb-3">
+                  <label class="form-label required-field">Commercial assigné</label>
+                  <select class="form-select" name="assigned_commercial" id="commercialSelect" required>
+                    <option value="">Choisissez un commercial...</option>
+                    <option value="1" data-name="Jean Dupont" data-email="jean.dupont@eureka.com" data-files="23" selected>Jean Dupont</option>
+                    <option value="2" data-name="Sophie Martin" data-email="sophie.martin@eureka.com" data-files="31">Sophie Martin</option>
+                    <option value="3" data-name="Marc Dubois" data-email="marc.dubois@eureka.com" data-files="18">Marc Dubois</option>
+                    <option value="4" data-name="Julie Petit" data-email="julie.petit@eureka.com" data-files="27">Julie Petit</option>
+                  </select>
+                </div>
+                
+                <!-- Commercial Card -->
+                <div class="client-card">
+                  <div class="d-flex align-items-center">
+                    <div class="me-3">
+                      <div class="avatar-lg rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background: linear-gradient(135deg, #292A5F 0%, #F3E600 100%); color: white; font-weight: 700;">
+                        JD
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="mb-1" id="commercialName">Jean Dupont</h5>
+                      <p class="mb-1 text-muted small">
+                        <i class="fas fa-envelope me-2"></i><span id="commercialEmail">jean.dupont@eureka.com</span>
+                      </p>
+                      <p class="mb-0 text-muted small">
+                        <i class="fas fa-folder me-2"></i><span id="commercialFiles">23 dossiers en cours</span>
+                      </p>
+                    </div>
+                    <div>
+                      <span class="badge bg-success">Assigné</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="mt-4">
+                  <label class="form-label">Notes pour le commercial</label>
+                  <textarea class="form-control" name="commercial_notes" rows="4" placeholder="Notes et instructions pour le commercial...">Client très intéressé, rappeler avant le 15 mars pour planifier la visite technique.</textarea>
+                </div>
+              </div>
+
+              <!-- Tab 4: Statut & Suivi -->
+              <div class="tab-pane" id="tab-status">
+                <h5 class="section-title">Statut et Suivi</h5>
+                
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label required-field">Statut du dossier</label>
+                    <select class="form-select" name="status" required>
+                      <option value="nouveau">Nouveau</option>
+                      <option value="negociation" selected>En Négociation</option>
+                      <option value="proposition_envoyee">Proposition Envoyée</option>
+                      <option value="attente_reponse">Attente Réponse</option>
+                      <option value="gagne">Gagné</option>
+                      <option value="perdu">Perdu</option>
+                    </select>
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Priorité</label>
+                    <select class="form-select" name="priority">
+                      <option value="normale">Normale</option>
+                      <option value="haute" selected>Haute</option>
+                      <option value="urgente">Urgente</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Date de relance prévue</label>
+                    <input type="date" class="form-control" name="followup_date" value="2024-03-15">
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Source</label>
+                    <select class="form-select" name="source">
+                      <option value="">Sélectionner...</option>
+                      <option value="site_web" selected>Site Web</option>
+                      <option value="recommandation">Recommandation</option>
+                      <option value="salon">Salon / Événement</option>
+                      <option value="appel_entrant">Appel Entrant</option>
+                      <option value="prospection">Prospection</option>
+                      <option value="partenaire">Partenaire</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="mb-3">
+                  <label class="form-label">Notes internes</label>
+                  <textarea class="form-control" name="internal_notes" rows="4" placeholder="Notes et commentaires sur le dossier...">Dossier à forte valeur. Client avec plusieurs projets en cours. Bien suivre.</textarea>
+                </div>
+                
+                <!-- Timeline -->
+                <h6 class="mt-4 mb-3"><i class="fas fa-history me-2"></i>Historique des modifications</h6>
+                <div class="timeline-item">
+                  <div class="d-flex justify-content-between">
+                    <strong>Statut modifié</strong>
+                    <small class="text-muted">Il y a 2 jours</small>
+                  </div>
+                  <p class="mb-0 text-muted small">Statut changé de "Nouveau" à "En Négociation" par Jean Dupont</p>
+                </div>
+                <div class="timeline-item">
+                  <div class="d-flex justify-content-between">
+                    <strong>Dossier créé</strong>
+                    <small class="text-muted">15 Jan 2024</small>
+                  </div>
+                  <p class="mb-0 text-muted small">Dossier créé par Jean Dupont</p>
+                </div>
+              </div>
+
+              <!-- Tab 5: Documents -->
+              <div class="tab-pane" id="tab-documents">
+                <h5 class="section-title">Documents Associés</h5>
+                
+                <div class="mb-4">
+                  <button type="button" class="btn btn-primary" onclick="uploadDocument()">
+                    <i class="fas fa-upload me-2"></i>Télécharger un document
+                  </button>
+                </div>
+                
+                <!-- Documents List -->
+                <div class="document-item">
+                  <div class="me-3">
+                    <i class="fas fa-file-pdf fa-2x text-danger"></i>
+                  </div>
+                  <div class="flex-grow-1">
+                    <h6 class="mb-1">Devis_SARL_Martin_Energies.pdf</h6>
+                    <small class="text-muted">Ajouté le 18 Jan 2024 • 256 Ko</small>
+                  </div>
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-primary">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                
+                <div class="document-item">
+                  <div class="me-3">
+                    <i class="fas fa-file-word fa-2x text-primary"></i>
+                  </div>
+                  <div class="flex-grow-1">
+                    <h6 class="mb-1">Contrat_Installation.docx</h6>
+                    <small class="text-muted">Ajouté le 20 Jan 2024 • 128 Ko</small>
+                  </div>
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-primary">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                
+                <div class="document-item">
+                  <div class="me-3">
+                    <i class="fas fa-file-image fa-2x text-success"></i>
+                  </div>
+                  <div class="flex-grow-1">
+                    <h6 class="mb-1">Photos_Site.jpg</h6>
+                    <small class="text-muted">Ajouté le 22 Jan 2024 • 1.2 Mo</small>
+                  </div>
+                  <div class="d-flex gap-2">
+                    <button class="btn btn-sm btn-outline-primary">
+                      <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </div>
+                </div>
+                
+                <!-- Danger Zone -->
+                <div class="danger-zone">
+                  <h6><i class="fas fa-exclamation-triangle me-2"></i>Zone de Danger</h6>
+                  <p class="text-muted small mb-3">
+                    La suppression d'un dossier est irréversible. Toutes les données associées (documents, notes, historique) seront définitivement perdues.
+                  </p>
+                  <button type="button" class="btn btn-danger" onclick="deleteFile()">
+                    <i class="fas fa-trash me-2"></i>Supprimer ce dossier
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Sticky Actions -->
+            <div class="sticky-actions">
+              <div>
+                <small class="text-muted">Dernière modification : Il y a 2 jours par Jean Dupont</small>
+              </div>
+              <div class="d-flex gap-2">
+                <a href="files-list.html" class="btn btn-outline-secondary">
+                  <i class="fas fa-times me-2"></i>Annuler
+                </a>
+                <button type="submit" class="btn btn-save">
+                  <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </form>
+
+      </div>
+    </div>
+    
+  </main>
+
+  <!-- Overlay for mobile sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="../assets/js/sidebar.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/components.js"></script>
+  
+  <script>
+    let productCounter = 2;
+    
+    // Initialize
+    $(document).ready(function() {
+      // Initialize Select2
+      $('#commercialSelect').select2({
+        theme: 'bootstrap-5'
+      });
+      
+      // Commercial select change
+      $('#commercialSelect').on('change', function() {
+        const selectedOption = $(this).find('option:selected');
+        if (selectedOption.val()) {
+          const name = selectedOption.data('name');
+          const email = selectedOption.data('email');
+          const files = selectedOption.data('files');
+          const initials = name.split(' ').map(n => n[0]).join('');
+          
+          $('#commercialName').text(name);
+          $('#commercialEmail').text(email);
+          $('#commercialFiles').text(files + ' dossiers en cours');
+        }
+      });
+      
+      // Calculate total on load and input change
+      calculateTotal();
+      $(document).on('input', 'input[name*="_qty"], input[name*="_price"]', function() {
+        calculateTotal();
+      });
+    });
+    
+    // Switch tabs
+    function switchTab(tabId) {
+      $('.tab-button').removeClass('active');
+      $(`.tab-button[data-tab="${tabId}"]`).addClass('active');
+      
+      $('.tab-pane').removeClass('active');
+      $(`#tab-${tabId}`).addClass('active');
+      
+      updateTabValidation(tabId);
+    }
+    
+    // Update tab validation indicators
+    function updateTabValidation(tabId) {
+      const tab = $(`#tab-${tabId}`);
+      const requiredInputs = tab.find('input[required], select[required], textarea[required]');
+      let isValid = true;
+      
+      requiredInputs.each(function() {
+        if (!this.checkValidity() || !$(this).val()) {
+          isValid = false;
+        }
+      });
+      
+      const indicator = $(`#indicator-${tabId}`);
+      if (isValid) {
+        indicator.removeClass('invalid').addClass('valid');
+      } else {
+        indicator.removeClass('valid').addClass('invalid');
+      }
+    }
+    
+    // Add product
+    function addProduct() {
+      productCounter++;
+      const productHTML = `
+        <div class="product-item" data-product-index="${productCounter}">
+          <div class="d-flex justify-content-end mb-2">
+            <button type="button" class="btn btn-sm btn-danger" onclick="removeProduct(${productCounter})">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Produit/Service</label>
+              <select class="form-select" name="product_${productCounter}_type">
+                <option value="">Sélectionner...</option>
+                <option value="panneaux_solaires">Panneaux Solaires</option>
+                <option value="pompe_chaleur">Pompe à Chaleur</option>
+                <option value="isolation">Isolation Thermique</option>
+                <option value="chaudiere">Chaudière</option>
+                <option value="climatisation">Climatisation</option>
+                <option value="audit_energie">Audit Énergétique</option>
+                <option value="autre">Autre</option>
+              </select>
+            </div>
+            
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Quantité</label>
+              <input type="number" class="form-control" name="product_${productCounter}_qty" value="1" min="1">
+            </div>
+            
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Prix unitaire (€)</label>
+              <input type="number" class="form-control" name="product_${productCounter}_price" placeholder="0.00" step="0.01">
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="product_${productCounter}_desc" rows="2" placeholder="Description du produit ou service..."></textarea>
+          </div>
+        </div>
+      `;
+      
+      $('#products-container').append(productHTML);
+    }
+    
+    // Remove product
+    function removeProduct(index) {
+      $(`.product-item[data-product-index="${index}"]`).fadeOut(300, function() {
+        $(this).remove();
+        calculateTotal();
+      });
+    }
+    
+    // Calculate total
+    function calculateTotal() {
+      let total = 0;
+      
+      $('.product-item').each(function() {
+        const qty = parseFloat($(this).find('input[name*="_qty"]').val()) || 0;
+        const price = parseFloat($(this).find('input[name*="_price"]').val()) || 0;
+        total += qty * price;
+      });
+      
+      $('#totalAmount').text(total.toFixed(2) + ' €');
+    }
+    
+    // Upload document
+    function uploadDocument() {
+      alert('Fonction d\'upload de document à implémenter');
+    }
+    
+    // Delete file
+    function deleteFile() {
+      if (confirm('Êtes-vous sûr de vouloir supprimer ce dossier ? Cette action est irréversible.')) {
+        alert('Dossier supprimé');
+        window.location.href = 'files-list.html';
+      }
+    }
+    
+    // Form submission
+    $('#fileEditForm').on('submit', function(e) {
+      e.preventDefault();
+      
+      if (this.checkValidity()) {
+        const formData = new FormData(this);
+        console.log('Form data:', Object.fromEntries(formData));
+        
+        alert('Dossier modifié avec succès !');
+        window.location.href = 'files-list.html';
+      } else {
+        this.classList.add('was-validated');
+      }
+    });
+  </script>
+</body>
+</html>

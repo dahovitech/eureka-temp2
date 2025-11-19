@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Créer un nouveau dossier - Eureka CRM">
+  <meta name="author" content="jprud67">
+  <title>Nouveau Dossier - Eureka CRM</title>
+  
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+  <link href="../assets/css/variables.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/components.css" rel="stylesheet">
+  
+  <style>
+    .wizard-container {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    
+    .wizard-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    
+    .wizard-steps::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #e9ecef;
+      z-index: 0;
+    }
+    
+    .wizard-steps-progress {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #292A5F 0%, #F3E600 100%);
+      z-index: 1;
+      transition: width 0.4s ease;
+    }
+    
+    .wizard-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .wizard-step-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #adb5bd;
+      margin-bottom: 10px;
+      transition: all 0.3s ease;
+    }
+    
+    .wizard-step.active .wizard-step-circle {
+      background: linear-gradient(135deg, #292A5F 0%, #F3E600 100%);
+      border-color: #292A5F;
+      color: white;
+      transform: scale(1.1);
+    }
+    
+    .wizard-step.completed .wizard-step-circle {
+      background: #28a745;
+      border-color: #28a745;
+      color: white;
+    }
+    
+    .wizard-step-label {
+      font-size: 0.85rem;
+      color: #6c757d;
+      text-align: center;
+      font-weight: 500;
+    }
+    
+    .wizard-step.active .wizard-step-label {
+      color: #292A5F;
+      font-weight: 600;
+    }
+    
+    .wizard-step.completed .wizard-step-label {
+      color: #28a745;
+    }
+    
+    .wizard-content {
+      min-height: 400px;
+      position: relative;
+    }
+    
+    .wizard-tab {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+    
+    .wizard-tab.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    .wizard-tab-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #292A5F;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #F3E600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .wizard-tab-title i {
+      color: #F3E600;
+      font-size: 1.3rem;
+    }
+    
+    .wizard-navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e9ecef;
+    }
+    
+    .btn-wizard-prev,
+    .btn-wizard-next,
+    .btn-wizard-submit {
+      padding: 12px 30px;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-wizard-prev {
+      background: #6c757d;
+      color: white;
+      border: none;
+    }
+    
+    .btn-wizard-prev:hover {
+      background: #5a6268;
+      color: white;
+    }
+    
+    .btn-wizard-next {
+      background: linear-gradient(135deg, #292A5F 0%, #3a3b7f 100%);
+      color: white;
+      border: none;
+    }
+    
+    .btn-wizard-next:hover {
+      background: linear-gradient(135deg, #1f2047 0%, #292A5F 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(41, 42, 95, 0.3);
+    }
+    
+    .btn-wizard-submit {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      border: none;
+    }
+    
+    .btn-wizard-submit:hover {
+      background: linear-gradient(135deg, #218838 0%, #1aa179 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+    
+    .required-field::after {
+      content: " *";
+      color: #dc3545;
+    }
+    
+    .form-label {
+      font-weight: 500;
+      color: #495057;
+      margin-bottom: 8px;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #F3E600;
+      box-shadow: 0 0 0 0.2rem rgba(243, 230, 0, 0.25);
+    }
+    
+    .client-card {
+      border: 2px solid #e9ecef;
+      border-radius: 8px;
+      padding: 15px;
+      transition: all 0.3s;
+      background: #f8f9fa;
+      cursor: pointer;
+    }
+    
+    .client-card:hover {
+      border-color: #F3E600;
+      background-color: #fffef5;
+    }
+    
+    .client-card.selected {
+      border-color: #292A5F;
+      background-color: #f0f0ff;
+    }
+    
+    .product-item {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border: 1px solid #dee2e6;
+    }
+    
+    .info-badge {
+      background-color: #e7f1ff;
+      color: #004085;
+      padding: 12px 15px;
+      border-radius: 8px;
+      border-left: 4px solid #0066cc;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+    }
+    
+    .select2-container--bootstrap-5 .select2-selection {
+      min-height: 45px;
+      padding: 8px 12px;
+    }
+    
+    @media (max-width: 768px) {
+      .wizard-step-label {
+        font-size: 0.7rem;
+      }
+      
+      .wizard-step-circle {
+        width: 35px;
+        height: 35px;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="../index.html" class="logo-link">
+        <img src="../assets/img/logo-light.png" alt="Eureka CRM" class="logo">
+      </a>
+      <button class="btn-close-sidebar d-lg-none" id="closeSidebar">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <ul class="sidebar-menu">
+        <li class="nav-item">
+          <a href="../index.html" class="nav-link">
+            <i class="fas fa-chart-pie"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="files-list.html" class="nav-link active">
+            <i class="fas fa-folder-open"></i>
+            <span>Dossiers</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="customers-list.html" class="nav-link">
+            <i class="fas fa-users"></i>
+            <span>Clients</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="documents.html" class="nav-link">
+            <i class="fas fa-file-alt"></i>
+            <span>Documents</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="notes.html" class="nav-link">
+            <i class="fas fa-sticky-note"></i>
+            <span>Notes</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="reminders.html" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Rappels</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="rewards.html" class="nav-link">
+            <i class="fas fa-trophy"></i>
+            <span>Rewards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="reports.html" class="nav-link">
+            <i class="fas fa-chart-bar"></i>
+            <span>Rapports</span>
+          </a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-divider"></div>
+      
+      <ul class="sidebar-menu">
+        <li class="nav-item">
+          <a href="settings.html" class="nav-link">
+            <i class="fas fa-cog"></i>
+            <span>Paramètres</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="auth/login.html" class="nav-link">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Déconnexion</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="btn-toggle-sidebar d-lg-none" id="toggleSidebar">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" class="form-control" placeholder="Rechercher...">
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <div class="header-item">
+          <button class="btn-header" id="notificationsBtn">
+            <i class="fas fa-bell"></i>
+            <span class="badge-count">3</span>
+          </button>
+        </div>
+        
+        <div class="header-item">
+          <button class="btn-header" id="messagesBtn">
+            <i class="fas fa-envelope"></i>
+            <span class="badge-count">5</span>
+          </button>
+        </div>
+        
+        <div class="header-item dropdown">
+          <button class="btn-profile dropdown-toggle" data-bs-toggle="dropdown">
+            <img src="https://ui-avatars.com/api/?name=Jean+Dupont&background=292A5F&color=F3E600" alt="User" class="avatar">
+            <span class="user-name">Jean Dupont</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="auth/profile.html">
+              <i class="fas fa-user me-2"></i>Mon Profil
+            </a></li>
+            <li><a class="dropdown-item" href="settings.html">
+              <i class="fas fa-cog me-2"></i>Paramètres
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="auth/login.html">
+              <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+            </a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Page Content -->
+    <div class="page-content">
+      <div class="container-fluid">
+        
+        <!-- Page Header -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-title"><i class="fas fa-folder-plus me-2"></i>Nouveau Dossier</h1>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="files-list.html">Dossiers</a></li>
+                <li class="breadcrumb-item active">Nouveau</li>
+              </ol>
+            </nav>
+          </div>
+          <div>
+            <a href="files-list.html" class="btn btn-outline-secondary">
+              <i class="fas fa-arrow-left me-2"></i>Retour
+            </a>
+          </div>
+        </div>
+
+        <!-- Info Badge -->
+        <div class="info-badge">
+          <i class="fas fa-info-circle me-2"></i>
+          Les champs marqués d'un astérisque (<span class="text-danger">*</span>) sont obligatoires. Suivez les étapes pour créer un nouveau dossier.
+        </div>
+
+        <!-- Wizard Container -->
+        <div class="wizard-container">
+          
+          <!-- Wizard Steps Progress -->
+          <div class="wizard-steps">
+            <div class="wizard-steps-progress" id="wizardProgress" style="width: 25%;"></div>
+            
+            <div class="wizard-step active" data-step="1">
+              <div class="wizard-step-circle">1</div>
+              <div class="wizard-step-label">Client</div>
+            </div>
+            
+            <div class="wizard-step" data-step="2">
+              <div class="wizard-step-circle">2</div>
+              <div class="wizard-step-label">Produits</div>
+            </div>
+            
+            <div class="wizard-step" data-step="3">
+              <div class="wizard-step-circle">3</div>
+              <div class="wizard-step-label">Commercial</div>
+            </div>
+            
+            <div class="wizard-step" data-step="4">
+              <div class="wizard-step-circle">4</div>
+              <div class="wizard-step-label">Finalisation</div>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <form id="fileWizardForm" novalidate>
+            
+            <!-- Wizard Content -->
+            <div class="wizard-content">
+              
+              <!-- Step 1: Sélection Client -->
+              <div class="wizard-tab active" data-tab="1">
+                <div class="wizard-tab-title">
+                  <i class="fas fa-user"></i>
+                  Sélection du Client
+                </div>
+                
+                <div class="mb-4">
+                  <label class="form-label required-field">Rechercher un client</label>
+                  <select class="form-select" name="client_id" id="clientSelect" required>
+                    <option value="">Rechercher un client...</option>
+                    <option value="1" data-name="SARL Martin Énergies" data-siret="85234567890123" data-contact="Jean Martin">SARL Martin Énergies</option>
+                    <option value="2" data-name="Boulangerie Dupont" data-siret="12345678901234" data-contact="Pierre Dupont">Boulangerie Dupont</option>
+                    <option value="3" data-name="Restaurant Le Gourmet" data-siret="98765432109876" data-contact="Marie Gourmet">Restaurant Le Gourmet</option>
+                    <option value="4" data-name="Garage Moderne" data-siret="45678901234567" data-contact="Luc Moderne">Garage Moderne</option>
+                    <option value="5" data-name="Cabinet Médical Centre" data-siret="78901234567890" data-contact="Dr. Sophie Centre">Cabinet Médical Centre</option>
+                  </select>
+                  <div class="invalid-feedback">Veuillez sélectionner un client.</div>
+                </div>
+                
+                <!-- Client Card Preview -->
+                <div id="clientCard" class="client-card" style="display: none;">
+                  <div class="d-flex align-items-center">
+                    <div class="me-3">
+                      <div class="avatar-lg bg-primary-light text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px;">
+                        <i class="fas fa-building fa-2x"></i>
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="mb-1" id="clientName">-</h5>
+                      <p class="mb-1 text-muted small">
+                        <i class="fas fa-id-card me-2"></i>SIRET: <span id="clientSiret">-</span>
+                      </p>
+                      <p class="mb-0 text-muted small">
+                        <i class="fas fa-user me-2"></i>Contact: <span id="clientContact">-</span>
+                      </p>
+                    </div>
+                    <div>
+                      <span class="badge bg-success">Sélectionné</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="mt-4">
+                  <a href="customer-add.html" class="btn btn-outline-primary">
+                    <i class="fas fa-plus me-2"></i>Créer un nouveau client
+                  </a>
+                </div>
+              </div>
+
+              <!-- Step 2: Produits/Services -->
+              <div class="wizard-tab" data-tab="2">
+                <div class="wizard-tab-title">
+                  <i class="fas fa-box"></i>
+                  Produits et Services
+                </div>
+                
+                <div id="products-container">
+                  <!-- Product 1 -->
+                  <div class="product-item" data-product-index="1">
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label required-field">Produit/Service</label>
+                        <select class="form-select" name="product_1_type" required>
+                          <option value="">Sélectionner...</option>
+                          <option value="panneaux_solaires">Panneaux Solaires</option>
+                          <option value="pompe_chaleur">Pompe à Chaleur</option>
+                          <option value="isolation">Isolation Thermique</option>
+                          <option value="chaudiere">Chaudière</option>
+                          <option value="climatisation">Climatisation</option>
+                          <option value="audit_energie">Audit Énergétique</option>
+                          <option value="autre">Autre</option>
+                        </select>
+                        <div class="invalid-feedback">Veuillez sélectionner un produit.</div>
+                      </div>
+                      
+                      <div class="col-md-3 mb-3">
+                        <label class="form-label required-field">Quantité</label>
+                        <input type="number" class="form-control" name="product_1_qty" value="1" min="1" required>
+                      </div>
+                      
+                      <div class="col-md-3 mb-3">
+                        <label class="form-label required-field">Prix unitaire (€)</label>
+                        <input type="number" class="form-control" name="product_1_price" placeholder="0.00" step="0.01" required>
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label class="form-label">Description</label>
+                      <textarea class="form-control" name="product_1_desc" rows="2" placeholder="Description du produit ou service..."></textarea>
+                    </div>
+                  </div>
+                </div>
+                
+                <button type="button" class="btn btn-outline-primary" onclick="addProduct()">
+                  <i class="fas fa-plus me-2"></i>Ajouter un produit
+                </button>
+                
+                <!-- Total -->
+                <div class="mt-4 p-3 bg-light rounded">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-bold">Total estimé :</span>
+                    <span class="fs-4 fw-bold text-primary" id="totalAmount">0.00 €</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 3: Commercial Assigné -->
+              <div class="wizard-tab" data-tab="3">
+                <div class="wizard-tab-title">
+                  <i class="fas fa-user-tie"></i>
+                  Commercial Responsable
+                </div>
+                
+                <div class="mb-3">
+                  <label class="form-label required-field">Sélectionnez le commercial responsable</label>
+                  <select class="form-select" name="assigned_commercial" id="commercialSelect" required>
+                    <option value="">Choisissez un commercial...</option>
+                    <option value="1" data-name="Jean Dupont" data-email="jean.dupont@eureka.com" data-files="23">Jean Dupont</option>
+                    <option value="2" data-name="Sophie Martin" data-email="sophie.martin@eureka.com" data-files="31">Sophie Martin</option>
+                    <option value="3" data-name="Marc Dubois" data-email="marc.dubois@eureka.com" data-files="18">Marc Dubois</option>
+                    <option value="4" data-name="Julie Petit" data-email="julie.petit@eureka.com" data-files="27">Julie Petit</option>
+                  </select>
+                  <div class="invalid-feedback">Veuillez sélectionner un commercial.</div>
+                </div>
+                
+                <!-- Commercial Card -->
+                <div id="commercialCard" class="client-card mt-3" style="display: none;">
+                  <div class="d-flex align-items-center">
+                    <div class="me-3">
+                      <div class="avatar-lg rounded-circle d-flex align-items-center justify-content-center" id="commercialAvatar" style="width: 60px; height: 60px; background: linear-gradient(135deg, #292A5F 0%, #F3E600 100%); color: white; font-weight: 700;">
+                        JD
+                      </div>
+                    </div>
+                    <div class="flex-grow-1">
+                      <h5 class="mb-1" id="commercialName">-</h5>
+                      <p class="mb-1 text-muted small" id="commercialEmail">
+                        <i class="fas fa-envelope me-2"></i>-
+                      </p>
+                      <p class="mb-0 text-muted small" id="commercialFiles">
+                        <i class="fas fa-folder me-2"></i>- dossiers en cours
+                      </p>
+                    </div>
+                    <div>
+                      <span class="badge bg-success">Assigné</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 4: Finalisation -->
+              <div class="wizard-tab" data-tab="4">
+                <div class="wizard-tab-title">
+                  <i class="fas fa-check-circle"></i>
+                  Finalisation du Dossier
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label required-field">Statut initial</label>
+                    <select class="form-select" name="status" required>
+                      <option value="nouveau" selected>Nouveau</option>
+                      <option value="negociation">En Négociation</option>
+                    </select>
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Priorité</label>
+                    <select class="form-select" name="priority">
+                      <option value="normale" selected>Normale</option>
+                      <option value="haute">Haute</option>
+                      <option value="urgente">Urgente</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Date de relance prévue</label>
+                    <input type="date" class="form-control" name="followup_date">
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Source</label>
+                    <select class="form-select" name="source">
+                      <option value="">Sélectionner...</option>
+                      <option value="site_web">Site Web</option>
+                      <option value="recommandation">Recommandation</option>
+                      <option value="salon">Salon / Événement</option>
+                      <option value="appel_entrant">Appel Entrant</option>
+                      <option value="prospection">Prospection</option>
+                      <option value="partenaire">Partenaire</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div class="mb-3">
+                  <label class="form-label">Notes internes</label>
+                  <textarea class="form-control" name="internal_notes" rows="4" placeholder="Notes et commentaires sur le dossier..."></textarea>
+                </div>
+                
+                <!-- Récapitulatif -->
+                <div class="card bg-light">
+                  <div class="card-header">
+                    <h6 class="mb-0"><i class="fas fa-list-check me-2"></i>Récapitulatif</h6>
+                  </div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-6">
+                        <p class="mb-2"><strong>Client :</strong> <span id="summaryClient">-</span></p>
+                        <p class="mb-2"><strong>Commercial :</strong> <span id="summaryCommercial">-</span></p>
+                      </div>
+                      <div class="col-md-6">
+                        <p class="mb-2"><strong>Produits :</strong> <span id="summaryProducts">-</span></p>
+                        <p class="mb-2"><strong>Montant total :</strong> <span id="summaryTotal" class="text-primary fw-bold">0.00 €</span></p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+            </div>
+
+            <!-- Wizard Navigation -->
+            <div class="wizard-navigation">
+              <button type="button" class="btn btn-wizard-prev" id="btnPrev" style="display: none;">
+                <i class="fas fa-arrow-left me-2"></i>Précédent
+              </button>
+              
+              <div class="ms-auto d-flex gap-2">
+                <a href="files-list.html" class="btn btn-outline-secondary">
+                  <i class="fas fa-times me-2"></i>Annuler
+                </a>
+                <button type="button" class="btn btn-wizard-next" id="btnNext">
+                  Suivant<i class="fas fa-arrow-right ms-2"></i>
+                </button>
+                <button type="submit" class="btn btn-wizard-submit" id="btnSubmit" style="display: none;">
+                  <i class="fas fa-save me-2"></i>Créer le dossier
+                </button>
+              </div>
+            </div>
+
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+    
+  </main>
+
+  <!-- Overlay for mobile sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script src="../assets/js/sidebar.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/components.js"></script>
+  
+  <script>
+    let currentStep = 1;
+    const totalSteps = 4;
+    let productCounter = 1;
+    
+    // Initialize
+    $(document).ready(function() {
+      // Initialize Select2
+      $('#clientSelect').select2({
+        theme: 'bootstrap-5',
+        placeholder: 'Rechercher un client...',
+        allowClear: true
+      });
+      
+      // Client select change
+      $('#clientSelect').on('change', function() {
+        const selectedOption = $(this).find('option:selected');
+        if (selectedOption.val()) {
+          $('#clientName').text(selectedOption.data('name'));
+          $('#clientSiret').text(selectedOption.data('siret'));
+          $('#clientContact').text(selectedOption.data('contact'));
+          $('#clientCard').fadeIn();
+          $('#summaryClient').text(selectedOption.data('name'));
+        } else {
+          $('#clientCard').fadeOut();
+          $('#summaryClient').text('-');
+        }
+      });
+      
+      // Commercial select change
+      $('#commercialSelect').on('change', function() {
+        const selectedOption = $(this).find('option:selected');
+        if (selectedOption.val()) {
+          const name = selectedOption.data('name');
+          const email = selectedOption.data('email');
+          const files = selectedOption.data('files');
+          const initials = name.split(' ').map(n => n[0]).join('');
+          
+          $('#commercialAvatar').text(initials);
+          $('#commercialName').text(name);
+          $('#commercialEmail').html('<i class="fas fa-envelope me-2"></i>' + email);
+          $('#commercialFiles').html('<i class="fas fa-folder me-2"></i>' + files + ' dossiers en cours');
+          $('#commercialCard').fadeIn();
+          $('#summaryCommercial').text(name);
+        } else {
+          $('#commercialCard').fadeOut();
+          $('#summaryCommercial').text('-');
+        }
+      });
+      
+      // Calculate total on input change
+      $(document).on('input', 'input[name*="_qty"], input[name*="_price"]', function() {
+        calculateTotal();
+      });
+    });
+    
+    // Wizard Navigation
+    function updateWizard() {
+      $('.wizard-step').removeClass('active completed');
+      $('.wizard-tab').removeClass('active');
+      
+      for (let i = 1; i <= totalSteps; i++) {
+        if (i < currentStep) {
+          $(`.wizard-step[data-step="${i}"]`).addClass('completed');
+        } else if (i === currentStep) {
+          $(`.wizard-step[data-step="${i}"]`).addClass('active');
+          $(`.wizard-tab[data-tab="${i}"]`).addClass('active');
+        }
+      }
+      
+      const progress = (currentStep / totalSteps) * 100;
+      $('#wizardProgress').css('width', progress + '%');
+      
+      if (currentStep === 1) {
+        $('#btnPrev').hide();
+      } else {
+        $('#btnPrev').show();
+      }
+      
+      if (currentStep === totalSteps) {
+        $('#btnNext').hide();
+        $('#btnSubmit').show();
+        updateSummary();
+      } else {
+        $('#btnNext').show();
+        $('#btnSubmit').hide();
+      }
+    }
+    
+    // Validate current step
+    function validateStep(step) {
+      const currentTab = $(`.wizard-tab[data-tab="${step}"]`);
+      const inputs = currentTab.find('input[required], select[required], textarea[required]');
+      let isValid = true;
+      
+      inputs.each(function() {
+        if (!this.checkValidity()) {
+          isValid = false;
+          $(this).addClass('is-invalid');
+        } else {
+          $(this).removeClass('is-invalid');
+        }
+      });
+      
+      return isValid;
+    }
+    
+    // Next button
+    $('#btnNext').on('click', function() {
+      if (validateStep(currentStep)) {
+        if (currentStep < totalSteps) {
+          currentStep++;
+          updateWizard();
+        }
+      }
+    });
+    
+    // Previous button
+    $('#btnPrev').on('click', function() {
+      if (currentStep > 1) {
+        currentStep--;
+        updateWizard();
+      }
+    });
+    
+    // Add product
+    function addProduct() {
+      productCounter++;
+      const productHTML = `
+        <div class="product-item" data-product-index="${productCounter}">
+          <div class="d-flex justify-content-end mb-2">
+            <button type="button" class="btn btn-sm btn-danger" onclick="removeProduct(${productCounter})">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Produit/Service</label>
+              <select class="form-select" name="product_${productCounter}_type">
+                <option value="">Sélectionner...</option>
+                <option value="panneaux_solaires">Panneaux Solaires</option>
+                <option value="pompe_chaleur">Pompe à Chaleur</option>
+                <option value="isolation">Isolation Thermique</option>
+                <option value="chaudiere">Chaudière</option>
+                <option value="climatisation">Climatisation</option>
+                <option value="audit_energie">Audit Énergétique</option>
+                <option value="autre">Autre</option>
+              </select>
+            </div>
+            
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Quantité</label>
+              <input type="number" class="form-control" name="product_${productCounter}_qty" value="1" min="1">
+            </div>
+            
+            <div class="col-md-3 mb-3">
+              <label class="form-label">Prix unitaire (€)</label>
+              <input type="number" class="form-control" name="product_${productCounter}_price" placeholder="0.00" step="0.01">
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea class="form-control" name="product_${productCounter}_desc" rows="2" placeholder="Description du produit ou service..."></textarea>
+          </div>
+        </div>
+      `;
+      
+      $('#products-container').append(productHTML);
+    }
+    
+    // Remove product
+    function removeProduct(index) {
+      $(`.product-item[data-product-index="${index}"]`).fadeOut(300, function() {
+        $(this).remove();
+        calculateTotal();
+      });
+    }
+    
+    // Calculate total
+    function calculateTotal() {
+      let total = 0;
+      let productCount = 0;
+      
+      $('.product-item').each(function() {
+        const qty = parseFloat($(this).find('input[name*="_qty"]').val()) || 0;
+        const price = parseFloat($(this).find('input[name*="_price"]').val()) || 0;
+        total += qty * price;
+        if ($(this).find('select[name*="_type"]').val()) {
+          productCount++;
+        }
+      });
+      
+      $('#totalAmount').text(total.toFixed(2) + ' €');
+      $('#summaryTotal').text(total.toFixed(2) + ' €');
+      $('#summaryProducts').text(productCount + ' produit(s)');
+    }
+    
+    // Update summary
+    function updateSummary() {
+      calculateTotal();
+    }
+    
+    // Form submission
+    $('#fileWizardForm').on('submit', function(e) {
+      e.preventDefault();
+      
+      if (validateStep(currentStep)) {
+        const formData = new FormData(this);
+        console.log('Form data:', Object.fromEntries(formData));
+        
+        alert('Dossier créé avec succès !');
+        window.location.href = 'files-list.html';
+      }
+    });
+  </script>
+</body>
+</html>

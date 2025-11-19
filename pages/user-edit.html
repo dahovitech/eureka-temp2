@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Modifier un utilisateur - Eureka CRM">
+  <meta name="author" content="jprud67">
+  <title>Modifier Utilisateur - Eureka CRM</title>
+  
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../assets/css/variables.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/components.css" rel="stylesheet">
+  
+  <style>
+    .tabs-container {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    
+    .tabs-navigation {
+      position: sticky;
+      top: 0;
+      background: white;
+      border-bottom: 2px solid #e9ecef;
+      z-index: 100;
+      display: flex;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    
+    .tab-button {
+      flex: 1;
+      min-width: 150px;
+      padding: 18px 20px;
+      border: none;
+      background: white;
+      color: #6c757d;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    
+    .tab-button:hover {
+      background: #f8f9fa;
+      color: #292A5F;
+    }
+    
+    .tab-button.active {
+      color: #292A5F;
+      background: #fffef5;
+    }
+    
+    .tab-button.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #292A5F 0%, #F3E600 100%);
+    }
+    
+    .tab-button i {
+      font-size: 1.1rem;
+    }
+    
+    .tab-validation-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #6c757d;
+      margin-left: 8px;
+    }
+    
+    .tab-validation-indicator.valid {
+      background: #28a745;
+    }
+    
+    .tab-validation-indicator.invalid {
+      background: #dc3545;
+    }
+    
+    .tab-content-wrapper {
+      padding: 30px;
+    }
+    
+    .tab-pane {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    .tab-pane.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .section-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #292A5F;
+      margin-bottom: 25px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #F3E600;
+    }
+    
+    .required-field::after {
+      content: " *";
+      color: #dc3545;
+    }
+    
+    .form-label {
+      font-weight: 500;
+      color: #495057;
+      margin-bottom: 8px;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+      border-color: #F3E600;
+      box-shadow: 0 0 0 0.2rem rgba(243, 230, 0, 0.25);
+    }
+    
+    .avatar-preview {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #292A5F 0%, #F3E600 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0 auto 20px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .avatar-preview:hover {
+      transform: scale(1.05);
+    }
+    
+    .avatar-upload-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .avatar-preview:hover .avatar-upload-overlay {
+      opacity: 1;
+    }
+    
+    .role-card {
+      border: 2px solid #e9ecef;
+      border-radius: 10px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+    
+    .role-card:hover {
+      border-color: #F3E600;
+      background-color: #fffef5;
+    }
+    
+    .role-card.selected {
+      border-color: #292A5F;
+      background-color: #f0f0ff;
+    }
+    
+    .role-card i {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+    }
+    
+    .permissions-list {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+    }
+    
+    .permission-item {
+      padding: 8px 0;
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .permission-item:last-child {
+      border-bottom: none;
+    }
+    
+    .stats-card {
+      background: linear-gradient(135deg, #292A5F 0%, #3a3b7f 100%);
+      color: white;
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+    
+    .stats-card h3 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    
+    .stats-card p {
+      margin: 0;
+      opacity: 0.9;
+    }
+    
+    .timeline-item {
+      padding: 15px;
+      border-left: 3px solid #F3E600;
+      margin-bottom: 15px;
+      background: #f8f9fa;
+      border-radius: 0 8px 8px 0;
+    }
+    
+    .sticky-actions {
+      position: sticky;
+      bottom: 0;
+      background: white;
+      padding: 20px 30px;
+      border-top: 2px solid #e9ecef;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 99;
+      box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+    }
+    
+    .btn-save {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      font-weight: 600;
+      border-radius: 8px;
+    }
+    
+    .btn-save:hover {
+      background: linear-gradient(135deg, #218838 0%, #1aa179 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+    
+    .danger-zone {
+      background: #fff5f5;
+      border: 2px solid #ffc9c9;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 30px;
+    }
+    
+    .danger-zone h6 {
+      color: #dc3545;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+    
+    .badge-admin {
+      background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    
+    .badge-commercial {
+      background: linear-gradient(135deg, #ffc107 0%, #ff8b00 100%);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    
+    @media (max-width: 768px) {
+      .tab-button {
+        min-width: 120px;
+        font-size: 0.9rem;
+        padding: 15px 12px;
+      }
+      
+      .tab-content-wrapper {
+        padding: 20px 15px;
+      }
+      
+      .sticky-actions {
+        padding: 15px;
+        flex-direction: column;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="../index.html" class="logo-link">
+        <img src="../assets/img/logo-light.png" alt="Eureka CRM" class="logo">
+      </a>
+      <button class="btn-close-sidebar d-lg-none" id="closeSidebar">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <ul class="sidebar-menu">
+        <li class="nav-item">
+          <a href="../index.html" class="nav-link">
+            <i class="fas fa-chart-pie"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="files-list.html" class="nav-link">
+            <i class="fas fa-folder-open"></i>
+            <span>Dossiers</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="customers-list.html" class="nav-link">
+            <i class="fas fa-users"></i>
+            <span>Clients</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="documents.html" class="nav-link">
+            <i class="fas fa-file-alt"></i>
+            <span>Documents</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="notes.html" class="nav-link">
+            <i class="fas fa-sticky-note"></i>
+            <span>Notes</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="reminders.html" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Rappels</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="rewards.html" class="nav-link">
+            <i class="fas fa-trophy"></i>
+            <span>Rewards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="reports.html" class="nav-link">
+            <i class="fas fa-chart-bar"></i>
+            <span>Rapports</span>
+          </a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-divider"></div>
+      
+      <p class="sidebar-section-title">Administration</p>
+      <ul class="sidebar-menu">
+        <li class="nav-item">
+          <a href="users-list.html" class="nav-link active">
+            <i class="fas fa-user-cog"></i>
+            <span>Utilisateurs</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="settings.html" class="nav-link">
+            <i class="fas fa-cog"></i>
+            <span>Paramètres</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="auth/login.html" class="nav-link">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Déconnexion</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="btn-toggle-sidebar d-lg-none" id="toggleSidebar">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" class="form-control" placeholder="Rechercher...">
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <div class="header-item">
+          <button class="btn-header" id="notificationsBtn">
+            <i class="fas fa-bell"></i>
+            <span class="badge-count">3</span>
+          </button>
+        </div>
+        
+        <div class="header-item">
+          <button class="btn-header" id="messagesBtn">
+            <i class="fas fa-envelope"></i>
+            <span class="badge-count">5</span>
+          </button>
+        </div>
+        
+        <div class="header-item dropdown">
+          <button class="btn-profile dropdown-toggle" data-bs-toggle="dropdown">
+            <img src="https://ui-avatars.com/api/?name=Admin+Eureka&background=292A5F&color=F3E600" alt="User" class="avatar">
+            <span class="user-name">Admin Eureka</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="auth/profile.html">
+              <i class="fas fa-user me-2"></i>Mon Profil
+            </a></li>
+            <li><a class="dropdown-item" href="settings.html">
+              <i class="fas fa-cog me-2"></i>Paramètres
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="auth/login.html">
+              <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+            </a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Page Content -->
+    <div class="page-content">
+      <div class="container-fluid">
+        
+        <!-- Page Header -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-title"><i class="fas fa-user-edit me-2"></i>Modifier Utilisateur</h1>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Accueil</a></li>
+                <li class="breadcrumb-item"><a href="users-list.html">Utilisateurs</a></li>
+                <li class="breadcrumb-item active">Modifier</li>
+              </ol>
+            </nav>
+          </div>
+          <div class="d-flex gap-2">
+            <span class="badge bg-success">Actif</span>
+            <a href="users-list.html" class="btn btn-outline-secondary">
+              <i class="fas fa-arrow-left me-2"></i>Retour
+            </a>
+          </div>
+        </div>
+
+        <!-- Tabs Container -->
+        <form id="userEditForm" novalidate>
+          <div class="tabs-container">
+            
+            <!-- Tabs Navigation -->
+            <div class="tabs-navigation">
+              <button type="button" class="tab-button active" data-tab="profile" onclick="switchTab('profile')">
+                <i class="fas fa-user"></i>
+                <span>Profil</span>
+                <span class="tab-validation-indicator valid" id="indicator-profile"></span>
+              </button>
+              
+              <button type="button" class="tab-button" data-tab="security" onclick="switchTab('security')">
+                <i class="fas fa-lock"></i>
+                <span>Sécurité</span>
+                <span class="tab-validation-indicator" id="indicator-security"></span>
+              </button>
+              
+              <button type="button" class="tab-button" data-tab="permissions" onclick="switchTab('permissions')">
+                <i class="fas fa-user-shield"></i>
+                <span>Rôle & Permissions</span>
+                <span class="tab-validation-indicator valid" id="indicator-permissions"></span>
+              </button>
+              
+              <button type="button" class="tab-button" data-tab="activity" onclick="switchTab('activity')">
+                <i class="fas fa-history"></i>
+                <span>Activité</span>
+                <span class="tab-validation-indicator" id="indicator-activity"></span>
+              </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content-wrapper">
+              
+              <!-- Tab 1: Profil -->
+              <div class="tab-pane active" id="tab-profile">
+                <div class="row">
+                  <div class="col-lg-8">
+                    <h5 class="section-title">Informations Personnelles</h5>
+                    
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label required-field">Prénom</label>
+                        <input type="text" class="form-control" name="firstname" value="Sophie" required>
+                        <div class="invalid-feedback">Veuillez entrer le prénom.</div>
+                      </div>
+                      
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label required-field">Nom</label>
+                        <input type="text" class="form-control" name="lastname" value="Martin" required>
+                        <div class="invalid-feedback">Veuillez entrer le nom.</div>
+                      </div>
+                    </div>
+                    
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label required-field">Email</label>
+                        <input type="email" class="form-control" name="email" value="sophie.martin@eureka.com" required>
+                        <div class="invalid-feedback">Veuillez entrer un email valide.</div>
+                      </div>
+                      
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Téléphone</label>
+                        <input type="tel" class="form-control" name="phone" value="+33 6 12 34 56 78">
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label class="form-label">Poste / Fonction</label>
+                      <input type="text" class="form-control" name="position" value="Commercial Senior">
+                    </div>
+                    
+                    <div class="row">
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Date d'arrivée</label>
+                        <input type="date" class="form-control" name="hire_date" value="2023-06-15">
+                      </div>
+                      
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Statut du compte</label>
+                        <select class="form-select" name="status">
+                          <option value="active" selected>Actif</option>
+                          <option value="inactive">Inactif</option>
+                          <option value="suspended">Suspendu</option>
+                        </select>
+                      </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                      <label class="form-label">Biographie</label>
+                      <textarea class="form-control" name="bio" rows="3" placeholder="Courte présentation...">Commercial expérimenté spécialisé dans les solutions énergétiques renouvelables.</textarea>
+                    </div>
+                  </div>
+                  
+                  <div class="col-lg-4">
+                    <h5 class="section-title">Photo de Profil</h5>
+                    <div class="text-center">
+                      <div class="avatar-preview" id="avatarPreview" onclick="uploadAvatar()">
+                        SM
+                        <div class="avatar-upload-overlay">
+                          <i class="fas fa-camera fa-2x"></i>
+                        </div>
+                      </div>
+                      <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                      <button type="button" class="btn btn-sm btn-outline-primary" onclick="uploadAvatar()">
+                        <i class="fas fa-upload me-2"></i>Changer la photo
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Tab 2: Sécurité -->
+              <div class="tab-pane" id="tab-security">
+                <h5 class="section-title">Sécurité du Compte</h5>
+                
+                <div class="alert alert-info">
+                  <i class="fas fa-info-circle me-2"></i>
+                  Laissez les champs vides si vous ne souhaitez pas modifier le mot de passe.
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Nouveau mot de passe</label>
+                    <div class="input-group">
+                      <input type="password" class="form-control" name="new_password" id="new_password" minlength="8">
+                      <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('new_password')">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                    </div>
+                    <div class="form-text">Minimum 8 caractères</div>
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Confirmer le nouveau mot de passe</label>
+                    <div class="input-group">
+                      <input type="password" class="form-control" name="confirm_password" id="confirm_password">
+                      <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('confirm_password')">
+                        <i class="fas fa-eye"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                
+                <hr class="my-4">
+                
+                <h6 class="mb-3"><i class="fas fa-shield-alt me-2"></i>Options de Sécurité</h6>
+                
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" name="force_password_change" id="forcePasswordChange">
+                  <label class="form-check-label" for="forcePasswordChange">
+                    Forcer le changement de mot de passe à la prochaine connexion
+                  </label>
+                </div>
+                
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" name="two_factor_auth" id="twoFactorAuth" checked>
+                  <label class="form-check-label" for="twoFactorAuth">
+                    Authentification à deux facteurs activée
+                  </label>
+                </div>
+                
+                <div class="form-check mb-3">
+                  <input class="form-check-input" type="checkbox" name="email_notifications" id="emailNotifications" checked>
+                  <label class="form-check-label" for="emailNotifications">
+                    Recevoir des notifications par email sur l'activité du compte
+                  </label>
+                </div>
+                
+                <hr class="my-4">
+                
+                <h6 class="mb-3"><i class="fas fa-history me-2"></i>Dernières Connexions</h6>
+                
+                <div class="timeline-item">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <i class="fas fa-desktop me-2"></i>
+                      <strong>Connexion depuis ordinateur</strong>
+                    </div>
+                    <small class="text-muted">Il y a 2 heures</small>
+                  </div>
+                  <p class="mb-0 text-muted small mt-2">IP: 192.168.1.45 • Paris, France</p>
+                </div>
+                
+                <div class="timeline-item">
+                  <div class="d-flex justify-content-between">
+                    <div>
+                      <i class="fas fa-mobile-alt me-2"></i>
+                      <strong>Connexion depuis mobile</strong>
+                    </div>
+                    <small class="text-muted">Hier à 14:32</small>
+                  </div>
+                  <p class="mb-0 text-muted small mt-2">IP: 192.168.1.67 • Paris, France</p>
+                </div>
+                
+                <button type="button" class="btn btn-outline-danger mt-3" onclick="disconnectAllSessions()">
+                  <i class="fas fa-sign-out-alt me-2"></i>Déconnecter toutes les sessions actives
+                </button>
+              </div>
+
+              <!-- Tab 3: Rôle & Permissions -->
+              <div class="tab-pane" id="tab-permissions">
+                <h5 class="section-title">Rôle et Permissions</h5>
+                
+                <div class="row mb-4">
+                  <div class="col-md-6 mb-3">
+                    <div class="role-card" data-role="admin" onclick="selectRole('admin')">
+                      <i class="fas fa-user-shield text-primary"></i>
+                      <h5>Administrateur</h5>
+                      <p>Accès complet à toutes les fonctionnalités</p>
+                    </div>
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <div class="role-card selected" data-role="commercial" onclick="selectRole('commercial')">
+                      <i class="fas fa-user-tie text-warning"></i>
+                      <h5>Commercial</h5>
+                      <p>Gestion des clients et dossiers</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <input type="hidden" name="role" id="selectedRole" value="commercial">
+                
+                <!-- Permissions List -->
+                <div class="permissions-list" id="permissionsList">
+                  <h6 class="mb-3"><i class="fas fa-key me-2"></i>Permissions du rôle Commercial</h6>
+                  <div class="permission-item">
+                    <i class="fas fa-check text-success me-2"></i>Gérer les clients
+                  </div>
+                  <div class="permission-item">
+                    <i class="fas fa-check text-success me-2"></i>Créer et modifier des dossiers
+                  </div>
+                  <div class="permission-item">
+                    <i class="fas fa-check text-success me-2"></i>Upload de documents
+                  </div>
+                  <div class="permission-item">
+                    <i class="fas fa-check text-success me-2"></i>Gérer les notes et rappels
+                  </div>
+                  <div class="permission-item">
+                    <i class="fas fa-check text-success me-2"></i>Voir les rapports
+                  </div>
+                  <div class="permission-item">
+                    <i class="fas fa-times text-danger me-2"></i>Gérer les utilisateurs
+                  </div>
+                  <div class="permission-item">
+                    <i class="fas fa-times text-danger me-2"></i>Paramètres système
+                  </div>
+                </div>
+                
+                <div class="alert alert-warning mt-4">
+                  <i class="fas fa-exclamation-triangle me-2"></i>
+                  <strong>Attention :</strong> La modification du rôle prendra effet immédiatement après l'enregistrement.
+                </div>
+              </div>
+
+              <!-- Tab 4: Activité -->
+              <div class="tab-pane" id="tab-activity">
+                <h5 class="section-title">Statistiques et Activité</h5>
+                
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                  <div class="col-md-4">
+                    <div class="stats-card">
+                      <h3>31</h3>
+                      <p>Dossiers en cours</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="stats-card" style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%);">
+                      <h3>127</h3>
+                      <p>Dossiers clos</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="stats-card" style="background: linear-gradient(135deg, #ffc107 0%, #ff8b00 100%);">
+                      <h3>89%</h3>
+                      <p>Taux de réussite</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Activity Timeline -->
+                <h6 class="mb-3"><i class="fas fa-history me-2"></i>Activité Récente</h6>
+                
+                <div class="timeline-item">
+                  <div class="d-flex justify-content-between">
+                    <strong>Dossier #DS-2024-0156 modifié</strong>
+                    <small class="text-muted">Il y a 3 heures</small>
+                  </div>
+                  <p class="mb-0 text-muted small">Statut changé de "En Négociation" à "Gagné"</p>
+                </div>
+                
+                <div class="timeline-item">
+                  <div class="d-flex justify-content-between">
+                    <strong>Nouveau client ajouté</strong>
+                    <small class="text-muted">Hier à 16:45</small>
+                  </div>
+                  <p class="mb-0 text-muted small">SARL Durand Industries</p>
+                </div>
+                
+                <div class="timeline-item">
+                  <div class="d-flex justify-content-between">
+                    <strong>Document téléchargé</strong>
+                    <small class="text-muted">2 jours</small>
+                  </div>
+                  <p class="mb-0 text-muted small">Devis_Client_Martin.pdf • Dossier #DS-2024-0142</p>
+                </div>
+                
+                <div class="timeline-item">
+                  <div class="d-flex justify-content-between">
+                    <strong>Note créée</strong>
+                    <small class="text-muted">3 jours</small>
+                  </div>
+                  <p class="mb-0 text-muted small">Rappel prévu pour le 25 mars avec Client XYZ</p>
+                </div>
+                
+                <div class="timeline-item">
+                  <div class="d-flex justify-content-between">
+                    <strong>Dossier #DS-2024-0098 créé</strong>
+                    <small class="text-muted">5 jours</small>
+                  </div>
+                  <p class="mb-0 text-muted small">Nouveau projet panneaux solaires</p>
+                </div>
+                
+                <button type="button" class="btn btn-outline-primary mt-3">
+                  <i class="fas fa-history me-2"></i>Voir tout l'historique
+                </button>
+                
+                <!-- Danger Zone -->
+                <div class="danger-zone">
+                  <h6><i class="fas fa-exclamation-triangle me-2"></i>Zone de Danger</h6>
+                  <p class="text-muted small mb-3">
+                    La désactivation ou suppression d'un utilisateur est irréversible. Tous les dossiers assignés devront être réattribués.
+                  </p>
+                  <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-warning" onclick="suspendUser()">
+                      <i class="fas fa-pause me-2"></i>Suspendre le compte
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="deleteUser()">
+                      <i class="fas fa-trash me-2"></i>Supprimer l'utilisateur
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Sticky Actions -->
+            <div class="sticky-actions">
+              <div>
+                <small class="text-muted">Dernière modification : Il y a 3 jours</small>
+              </div>
+              <div class="d-flex gap-2">
+                <a href="users-list.html" class="btn btn-outline-secondary">
+                  <i class="fas fa-times me-2"></i>Annuler
+                </a>
+                <button type="submit" class="btn btn-save">
+                  <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </form>
+
+      </div>
+    </div>
+    
+  </main>
+
+  <!-- Overlay for mobile sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="../assets/js/sidebar.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/components.js"></script>
+  
+  <script>
+    // Initialize
+    $(document).ready(function() {
+      updateAvatarPreview();
+      
+      // Update avatar preview on name change
+      $('input[name="firstname"], input[name="lastname"]').on('input', function() {
+        updateAvatarPreview();
+      });
+    });
+    
+    // Switch tabs
+    function switchTab(tabId) {
+      $('.tab-button').removeClass('active');
+      $(`.tab-button[data-tab="${tabId}"]`).addClass('active');
+      
+      $('.tab-pane').removeClass('active');
+      $(`#tab-${tabId}`).addClass('active');
+      
+      updateTabValidation(tabId);
+    }
+    
+    // Update tab validation indicators
+    function updateTabValidation(tabId) {
+      const tab = $(`#tab-${tabId}`);
+      const requiredInputs = tab.find('input[required], select[required], textarea[required]');
+      let isValid = true;
+      
+      requiredInputs.each(function() {
+        if (!this.checkValidity() || !$(this).val()) {
+          isValid = false;
+        }
+      });
+      
+      const indicator = $(`#indicator-${tabId}`);
+      if (isValid) {
+        indicator.removeClass('invalid').addClass('valid');
+      } else {
+        indicator.removeClass('valid').addClass('invalid');
+      }
+    }
+    
+    // Update avatar preview
+    function updateAvatarPreview() {
+      const firstname = $('input[name="firstname"]').val() || '';
+      const lastname = $('input[name="lastname"]').val() || '';
+      
+      if (firstname || lastname) {
+        const initials = (firstname.charAt(0) + lastname.charAt(0)).toUpperCase();
+        $('#avatarPreview').html(`${initials}<div class="avatar-upload-overlay"><i class="fas fa-camera fa-2x"></i></div>`);
+      }
+    }
+    
+    // Upload avatar
+    function uploadAvatar() {
+      $('#avatarInput').click();
+    }
+    
+    $('#avatarInput').on('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          $('#avatarPreview').css('background-image', `url(${e.target.result})`);
+          $('#avatarPreview').css('background-size', 'cover');
+          $('#avatarPreview').html('<div class="avatar-upload-overlay"><i class="fas fa-camera fa-2x"></i></div>');
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+    
+    // Toggle password visibility
+    function togglePassword(fieldId) {
+      const field = document.getElementById(fieldId);
+      const icon = field.nextElementSibling.querySelector('i');
+      
+      if (field.type === 'password') {
+        field.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        field.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+    
+    // Select role
+    function selectRole(role) {
+      $('.role-card').removeClass('selected');
+      $(`.role-card[data-role="${role}"]`).addClass('selected');
+      $('#selectedRole').val(role);
+      updatePermissions(role);
+    }
+    
+    // Update permissions list
+    function updatePermissions(role) {
+      const adminPerms = `
+        <h6 class="mb-3"><i class="fas fa-key me-2"></i>Permissions du rôle Administrateur</h6>
+        <div class="permission-item"><i class="fas fa-check text-success me-2"></i>Gérer les clients</div>
+        <div class="permission-item"><i class="fas fa-check text-success me-2"></i>Créer et modifier des dossiers</div>
+        <div class="permission-item"><i class="fas fa-check text-success me-2"></i>Upload de documents</div>
+        <div class="permission-item"><i class="fas fa-check text-success me-2"></i>Gérer les notes et rappels</div>
+        <div class="permission-item"><i class="fas fa-check text-success me-2"></i>Voir les rapports</div>
+        <div class="permission-item"><i class="fas fa-check text-success me-2"></i>Gérer les utilisateurs</div>
+        <div class="permission-item"><i class="fas fa-check text-success me-2"></i>Paramètres système</div>
+      `;
+      
+      const commercialPerms = `
+        <h6 class="mb-3"><i class="fas fa-key me-2"></i>Permissions du rôle Commercial</h6>
+        <div class="permission-item"><i class="fas fa-check text-success me-2"></i>Gérer les clients</div>
+        <div class="permission-item"><i class="fas fa-check text-success me-2"></i>Créer et modifier des dossiers</div>
+        <div class="permission-item"><i class="fas fa-check text-success me-2"></i>Upload de documents</div>
+        <div class="permission-item"><i class="fas fa-check text-success me-2"></i>Gérer les notes et rappels</div>
+        <div class="permission-item"><i class="fas fa-check text-success me-2"></i>Voir les rapports</div>
+        <div class="permission-item"><i class="fas fa-times text-danger me-2"></i>Gérer les utilisateurs</div>
+        <div class="permission-item"><i class="fas fa-times text-danger me-2"></i>Paramètres système</div>
+      `;
+      
+      $('#permissionsList').html(role === 'admin' ? adminPerms : commercialPerms);
+    }
+    
+    // Disconnect all sessions
+    function disconnectAllSessions() {
+      if (confirm('Êtes-vous sûr de vouloir déconnecter toutes les sessions actives ?')) {
+        alert('Toutes les sessions ont été déconnectées');
+      }
+    }
+    
+    // Suspend user
+    function suspendUser() {
+      if (confirm('Êtes-vous sûr de vouloir suspendre ce compte ?')) {
+        alert('Compte suspendu');
+        window.location.href = 'users-list.html';
+      }
+    }
+    
+    // Delete user
+    function deleteUser() {
+      if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.')) {
+        alert('Utilisateur supprimé');
+        window.location.href = 'users-list.html';
+      }
+    }
+    
+    // Form submission
+    $('#userEditForm').on('submit', function(e) {
+      e.preventDefault();
+      
+      // Validate password match if provided
+      const newPassword = $('#new_password').val();
+      const confirmPassword = $('#confirm_password').val();
+      
+      if (newPassword && newPassword !== confirmPassword) {
+        alert('Les mots de passe ne correspondent pas');
+        return;
+      }
+      
+      if (this.checkValidity()) {
+        const formData = new FormData(this);
+        console.log('User data:', Object.fromEntries(formData));
+        
+        alert('Utilisateur modifié avec succès !');
+        window.location.href = 'users-list.html';
+      } else {
+        this.classList.add('was-validated');
+      }
+    });
+  </script>
+</body>
+</html>

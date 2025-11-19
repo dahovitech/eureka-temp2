@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mon profil - Eureka CRM">
+  <meta name="author" content="jprud67">
+  <title>Mon Profil - Eureka CRM</title>
+  
+  <link rel="icon" type="image/png" href="../../assets/img/favicon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="../../assets/css/variables.css" rel="stylesheet">
+  <link href="../../assets/css/style.css" rel="stylesheet">
+  <link href="../../assets/css/components.css" rel="stylesheet">
+  
+  <style>
+    .profile-header {
+      background: linear-gradient(135deg, #292A5F 0%, #3a3b7f 100%);
+      color: white;
+      padding: 40px;
+      border-radius: 12px 12px 0 0;
+      text-align: center;
+    }
+    
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #F3E600 0%, #d4c700 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #292A5F;
+      font-size: 3rem;
+      font-weight: 700;
+      margin: 0 auto 20px;
+      border: 4px solid white;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      cursor: pointer;
+      position: relative;
+    }
+    
+    .profile-avatar:hover::after {
+      content: 'Changer';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      right: 0;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      font-size: 0.75rem;
+      padding: 3px;
+      border-radius: 0 0 50% 50%;
+    }
+    
+    .profile-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    
+    .profile-role {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    .profile-tabs {
+      background: white;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    
+    .nav-tabs-profile {
+      border-bottom: 2px solid #e9ecef;
+      padding: 0 30px;
+    }
+    
+    .nav-tabs-profile .nav-link {
+      border: none;
+      color: #6c757d;
+      padding: 15px 20px;
+      font-weight: 500;
+      position: relative;
+    }
+    
+    .nav-tabs-profile .nav-link.active {
+      color: #292A5F;
+      background: none;
+    }
+    
+    .nav-tabs-profile .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #F3E600;
+    }
+    
+    .tab-content-profile {
+      padding: 30px;
+    }
+    
+    .form-section {
+      margin-bottom: 30px;
+    }
+    
+    .section-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #292A5F;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #F3E600;
+    }
+    
+    .stats-card {
+      text-align: center;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      transition: all 0.3s;
+    }
+    
+    .stats-card:hover {
+      background: #e9ecef;
+      transform: translateY(-2px);
+    }
+    
+    .stats-card i {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    
+    .stats-card h3 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    
+    .stats-card p {
+      color: #6c757d;
+      margin-bottom: 0;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="../../index.html" class="logo-link">
+        <img src="../../assets/img/logo-light.png" alt="Eureka CRM" class="logo">
+      </a>
+      <button class="btn-close-sidebar d-lg-none" id="closeSidebar">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <ul class="sidebar-menu">
+        <li class="nav-item">
+          <a href="../../index.html" class="nav-link">
+            <i class="fas fa-chart-pie"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="../files-list.html" class="nav-link">
+            <i class="fas fa-folder-open"></i>
+            <span>Dossiers</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="../customers-list.html" class="nav-link">
+            <i class="fas fa-users"></i>
+            <span>Clients</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="../documents.html" class="nav-link">
+            <i class="fas fa-file-alt"></i>
+            <span>Documents</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="../notes.html" class="nav-link">
+            <i class="fas fa-sticky-note"></i>
+            <span>Notes</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="../reminders.html" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Rappels</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="../rewards.html" class="nav-link">
+            <i class="fas fa-trophy"></i>
+            <span>Rewards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="../reports.html" class="nav-link">
+            <i class="fas fa-chart-bar"></i>
+            <span>Rapports</span>
+          </a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-divider"></div>
+      
+      <ul class="sidebar-menu">
+        <li class="nav-item">
+          <a href="../settings.html" class="nav-link">
+            <i class="fas fa-cog"></i>
+            <span>Paramètres</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="login.html" class="nav-link">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Déconnexion</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="btn-toggle-sidebar d-lg-none" id="toggleSidebar">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" class="form-control" placeholder="Rechercher...">
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <div class="header-item">
+          <button class="btn-header" id="notificationsBtn">
+            <i class="fas fa-bell"></i>
+            <span class="badge-count">3</span>
+          </button>
+        </div>
+        
+        <div class="header-item">
+          <button class="btn-header" id="messagesBtn">
+            <i class="fas fa-envelope"></i>
+            <span class="badge-count">5</span>
+          </button>
+        </div>
+        
+        <div class="header-item dropdown">
+          <button class="btn-profile dropdown-toggle" data-bs-toggle="dropdown">
+            <img src="https://ui-avatars.com/api/?name=Jean+Dupont&background=292A5F&color=F3E600" alt="User" class="avatar">
+            <span class="user-name">Jean Dupont</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="profile.html">
+              <i class="fas fa-user me-2"></i>Mon Profil
+            </a></li>
+            <li><a class="dropdown-item" href="../settings.html">
+              <i class="fas fa-cog me-2"></i>Paramètres
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="login.html">
+              <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+            </a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Page Content -->
+    <div class="page-content">
+      <div class="container-fluid">
+        
+        <!-- Page Header -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-title"><i class="fas fa-user me-2"></i>Mon Profil</h1>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../../index.html">Accueil</a></li>
+                <li class="breadcrumb-item active">Mon Profil</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="profile-header">
+          <div class="profile-avatar" title="Cliquer pour changer la photo">
+            <span>JD</span>
+          </div>
+          <h2 class="profile-name">Jean Dupont</h2>
+          <p class="profile-role">Responsable Commercial</p>
+          <span class="badge" style="background: linear-gradient(135deg, #F3E600 0%, #d4c700 100%); color: #292A5F; padding: 8px 15px; font-size: 0.9rem;">Commercial</span>
+        </div>
+
+        <div class="profile-tabs">
+          <!-- Nav Tabs -->
+          <ul class="nav nav-tabs nav-tabs-profile" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#info-tab" type="button">
+                <i class="fas fa-user me-2"></i>Informations
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#stats-tab" type="button">
+                <i class="fas fa-chart-bar me-2"></i>Statistiques
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#security-tab" type="button">
+                <i class="fas fa-lock me-2"></i>Sécurité
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" data-bs-toggle="tab" data-bs-target="#notifications-tab" type="button">
+                <i class="fas fa-bell me-2"></i>Notifications
+              </button>
+            </li>
+          </ul>
+
+          <!-- Tab Content -->
+          <div class="tab-content tab-content-profile">
+            
+            <!-- Informations Tab -->
+            <div class="tab-pane fade show active" id="info-tab" role="tabpanel">
+              <form id="profileForm">
+                <div class="form-section">
+                  <h5 class="section-title"><i class="fas fa-id-card me-2"></i>Informations Personnelles</h5>
+                  
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Prénom</label>
+                      <input type="text" class="form-control" value="Jean">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Nom</label>
+                      <input type="text" class="form-control" value="Dupont">
+                    </div>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Email</label>
+                      <input type="email" class="form-control" value="jean.dupont@eureka-crm.com" disabled>
+                      <small class="text-muted">Contactez un administrateur pour modifier l'email</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Téléphone</label>
+                      <input type="tel" class="form-control" value="+33 6 12 34 56 78">
+                    </div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label class="form-label">Poste / Fonction</label>
+                    <input type="text" class="form-control" value="Responsable Commercial">
+                  </div>
+                  
+                  <button type="submit" class="btn btn-eureka-primary">
+                    <i class="fas fa-save me-2"></i>Enregistrer les modifications
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Statistics Tab -->
+            <div class="tab-pane fade" id="stats-tab" role="tabpanel">
+              <h5 class="section-title"><i class="fas fa-chart-line me-2"></i>Mes Performances</h5>
+              
+              <div class="row mb-4">
+                <div class="col-md-3 col-6 mb-3">
+                  <div class="stats-card">
+                    <i class="fas fa-folder text-primary"></i>
+                    <h3>23</h3>
+                    <p>Dossiers actifs</p>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                  <div class="stats-card">
+                    <i class="fas fa-check-circle text-success"></i>
+                    <h3>15</h3>
+                    <p>Dossiers signés</p>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                  <div class="stats-card">
+                    <i class="fas fa-euro-sign text-warning"></i>
+                    <h3>98K</h3>
+                    <p>CA généré</p>
+                  </div>
+                </div>
+                <div class="col-md-3 col-6 mb-3">
+                  <div class="stats-card">
+                    <i class="fas fa-percentage text-info"></i>
+                    <h3>65%</h3>
+                    <p>Taux conversion</p>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="card">
+                <div class="card-body">
+                  <h6 class="mb-3">Activité mensuelle</h6>
+                  <div class="text-muted">
+                    <i class="fas fa-chart-bar me-2"></i>Graphique d'activité à venir...
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Security Tab -->
+            <div class="tab-pane fade" id="security-tab" role="tabpanel">
+              <form id="securityForm">
+                <div class="form-section">
+                  <h5 class="section-title"><i class="fas fa-key me-2"></i>Changer le mot de passe</h5>
+                  
+                  <div class="mb-3">
+                    <label class="form-label">Mot de passe actuel</label>
+                    <input type="password" class="form-control" id="currentPassword">
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label class="form-label">Nouveau mot de passe</label>
+                    <input type="password" class="form-control" id="newPassword" minlength="8">
+                    <small class="text-muted">Minimum 8 caractères</small>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label class="form-label">Confirmer le nouveau mot de passe</label>
+                    <input type="password" class="form-control" id="confirmPassword">
+                  </div>
+                  
+                  <button type="submit" class="btn btn-eureka-primary">
+                    <i class="fas fa-save me-2"></i>Changer le mot de passe
+                  </button>
+                </div>
+                
+                <div class="form-section">
+                  <h5 class="section-title"><i class="fas fa-shield-alt me-2"></i>Authentification à deux facteurs</h5>
+                  
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="twoFactorSwitch">
+                    <label class="form-check-label" for="twoFactorSwitch">
+                      Activer l'authentification à deux facteurs (2FA)
+                    </label>
+                  </div>
+                  <p class="text-muted mt-2">Ajoute une couche de sécurité supplémentaire à votre compte.</p>
+                </div>
+                
+                <div class="form-section">
+                  <h5 class="section-title"><i class="fas fa-history me-2"></i>Sessions actives</h5>
+                  
+                  <div class="list-group">
+                    <div class="list-group-item">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <strong><i class="fas fa-desktop me-2"></i>Windows - Chrome</strong>
+                          <br><small class="text-muted">Paris, France - 19/11/2025 15:30</small>
+                        </div>
+                        <span class="badge bg-success">Session actuelle</span>
+                      </div>
+                    </div>
+                    <div class="list-group-item">
+                      <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                          <strong><i class="fas fa-mobile-alt me-2"></i>iPhone - Safari</strong>
+                          <br><small class="text-muted">Paris, France - 18/11/2025 09:15</small>
+                        </div>
+                        <button class="btn btn-sm btn-danger">Déconnecter</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            <!-- Notifications Tab -->
+            <div class="tab-pane fade" id="notifications-tab" role="tabpanel">
+              <form id="notificationsForm">
+                <div class="form-section">
+                  <h5 class="section-title"><i class="fas fa-envelope me-2"></i>Notifications Email</h5>
+                  
+                  <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="emailNewFile" checked>
+                    <label class="form-check-label" for="emailNewFile">
+                      <strong>Nouveau dossier</strong>
+                      <br><small class="text-muted">Recevoir une notification lors de l'attribution d'un nouveau dossier</small>
+                    </label>
+                  </div>
+                  
+                  <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="emailFileUpdate" checked>
+                    <label class="form-check-label" for="emailFileUpdate">
+                      <strong>Mise à jour de dossier</strong>
+                      <br><small class="text-muted">Recevoir une notification lors de changements sur vos dossiers</small>
+                    </label>
+                  </div>
+                  
+                  <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="emailReminder" checked>
+                    <label class="form-check-label" for="emailReminder">
+                      <strong>Rappels</strong>
+                      <br><small class="text-muted">Recevoir des rappels par email</small>
+                    </label>
+                  </div>
+                  
+                  <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="emailReport">
+                    <label class="form-check-label" for="emailReport">
+                      <strong>Rapports hebdomadaires</strong>
+                      <br><small class="text-muted">Recevoir un résumé de votre activité chaque semaine</small>
+                    </label>
+                  </div>
+                </div>
+                
+                <div class="form-section">
+                  <h5 class="section-title"><i class="fas fa-bell me-2"></i>Notifications Navigateur</h5>
+                  
+                  <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="browserNotif" checked>
+                    <label class="form-check-label" for="browserNotif">
+                      <strong>Activer les notifications du navigateur</strong>
+                      <br><small class="text-muted">Recevoir des notifications en temps réel</small>
+                    </label>
+                  </div>
+                </div>
+                
+                <button type="submit" class="btn btn-eureka-primary">
+                  <i class="fas fa-save me-2"></i>Enregistrer les préférences
+                </button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+    
+  </main>
+
+  <!-- Overlay for mobile sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="../../assets/js/sidebar.js"></script>
+  <script src="../../assets/js/main.js"></script>
+  <script src="../../assets/js/components.js"></script>
+  
+  <script>
+    // Profile form submission
+    $('#profileForm').on('submit', function(e) {
+      e.preventDefault();
+      alert('Profil mis à jour avec succès !');
+    });
+    
+    // Security form submission
+    $('#securityForm').on('submit', function(e) {
+      e.preventDefault();
+      const newPass = $('#newPassword').val();
+      const confirmPass = $('#confirmPassword').val();
+      
+      if (newPass !== confirmPass) {
+        alert('Les mots de passe ne correspondent pas !');
+        return;
+      }
+      
+      if (newPass.length < 8) {
+        alert('Le mot de passe doit contenir au moins 8 caractères !');
+        return;
+      }
+      
+      alert('Mot de passe modifié avec succès !');
+      $(this)[0].reset();
+    });
+    
+    // Notifications form submission
+    $('#notificationsForm').on('submit', function(e) {
+      e.preventDefault();
+      alert('Préférences de notifications mises à jour !');
+    });
+  </script>
+</body>
+</html>
