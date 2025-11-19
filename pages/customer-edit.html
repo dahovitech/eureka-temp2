@@ -18,192 +18,145 @@
   <link href="../assets/css/components.css" rel="stylesheet">
   
   <style>
-    /* Wizard Container */
-    .wizard-container {
+    /* Tab Navigation Container */
+    .edit-tabs-container {
       background: white;
       border-radius: 12px;
-      padding: 30px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+      overflow: hidden;
     }
     
-    /* Wizard Steps Progress */
-    .wizard-steps {
+    /* Sticky Tab Navigation */
+    .edit-tabs-nav {
+      background: linear-gradient(135deg, #292A5F 0%, #3a3b7f 100%);
+      padding: 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
       display: flex;
-      justify-content: space-between;
-      margin-bottom: 40px;
-      position: relative;
+      overflow-x: auto;
+      border-bottom: 3px solid #F3E600;
     }
     
-    .wizard-steps::before {
-      content: '';
-      position: absolute;
-      top: 20px;
-      left: 0;
-      right: 0;
-      height: 3px;
-      background: #e9ecef;
-      z-index: 0;
+    .edit-tabs-nav::-webkit-scrollbar {
+      height: 4px;
     }
     
-    .wizard-steps-progress {
-      position: absolute;
-      top: 20px;
-      left: 0;
-      height: 3px;
-      background: linear-gradient(90deg, #292A5F 0%, #F3E600 100%);
-      z-index: 1;
-      transition: width 0.4s ease;
+    .edit-tabs-nav::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.1);
     }
     
-    .wizard-step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    .edit-tabs-nav::-webkit-scrollbar-thumb {
+      background: #F3E600;
+      border-radius: 2px;
+    }
+    
+    .edit-tab-btn {
       flex: 1;
+      min-width: 140px;
+      padding: 18px 20px;
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.7);
+      font-weight: 500;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
       position: relative;
-      z-index: 2;
-    }
-    
-    .wizard-step-circle {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: white;
-      border: 3px solid #e9ecef;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: 600;
-      color: #adb5bd;
-      margin-bottom: 10px;
-      transition: all 0.3s ease;
+      gap: 10px;
+      border-right: 1px solid rgba(255,255,255,0.1);
     }
     
-    .wizard-step.active .wizard-step-circle {
-      background: linear-gradient(135deg, #292A5F 0%, #F3E600 100%);
-      border-color: #292A5F;
-      color: white;
-      transform: scale(1.1);
+    .edit-tab-btn:last-child {
+      border-right: none;
     }
     
-    .wizard-step.completed .wizard-step-circle {
-      background: #28a745;
-      border-color: #28a745;
+    .edit-tab-btn i {
+      font-size: 1.1rem;
+    }
+    
+    .edit-tab-btn:hover {
+      background: rgba(255,255,255,0.1);
       color: white;
     }
     
-    .wizard-step-label {
-      font-size: 0.85rem;
-      color: #6c757d;
-      text-align: center;
-      font-weight: 500;
-    }
-    
-    .wizard-step.active .wizard-step-label {
+    .edit-tab-btn.active {
+      background: white;
       color: #292A5F;
       font-weight: 600;
     }
     
-    .wizard-step.completed .wizard-step-label {
-      color: #28a745;
+    .edit-tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #F3E600;
     }
     
-    /* Wizard Content */
-    .wizard-content {
-      min-height: 400px;
-      position: relative;
+    .edit-tab-btn .tab-status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: transparent;
+      transition: all 0.3s;
     }
     
-    .wizard-tab {
+    .edit-tab-btn.validated .tab-status {
+      background: #28a745;
+      box-shadow: 0 0 8px rgba(40, 167, 69, 0.6);
+    }
+    
+    .edit-tab-btn.has-error .tab-status {
+      background: #dc3545;
+      box-shadow: 0 0 8px rgba(220, 53, 69, 0.6);
+    }
+    
+    /* Tab Content */
+    .edit-tabs-content {
+      padding: 35px;
+    }
+    
+    .edit-tab-pane {
       display: none;
-      animation: fadeIn 0.4s ease;
+      animation: fadeInUp 0.4s ease;
     }
     
-    .wizard-tab.active {
+    .edit-tab-pane.active {
       display: block;
     }
     
-    @keyframes fadeIn {
+    @keyframes fadeInUp {
       from {
         opacity: 0;
-        transform: translateX(20px);
+        transform: translateY(20px);
       }
       to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
       }
     }
     
-    .wizard-tab-title {
-      font-size: 1.5rem;
+    .section-title {
+      font-size: 1.6rem;
       font-weight: 600;
       color: #292A5F;
       margin-bottom: 25px;
       padding-bottom: 15px;
-      border-bottom: 2px solid #F3E600;
+      border-bottom: 3px solid #F3E600;
       display: flex;
       align-items: center;
       gap: 12px;
     }
     
-    .wizard-tab-title i {
+    .section-title i {
       color: #F3E600;
-      font-size: 1.3rem;
-    }
-    
-    /* Wizard Navigation Buttons */
-    .wizard-navigation {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 30px;
-      padding-top: 20px;
-      border-top: 1px solid #e9ecef;
-    }
-    
-    .btn-wizard-prev,
-    .btn-wizard-next,
-    .btn-wizard-submit {
-      padding: 12px 30px;
-      font-weight: 500;
-      border-radius: 8px;
-      transition: all 0.3s ease;
-    }
-    
-    .btn-wizard-prev {
-      background: #6c757d;
-      color: white;
-      border: none;
-    }
-    
-    .btn-wizard-prev:hover {
-      background: #5a6268;
-      color: white;
-    }
-    
-    .btn-wizard-next {
-      background: linear-gradient(135deg, #292A5F 0%, #3a3b7f 100%);
-      color: white;
-      border: none;
-    }
-    
-    .btn-wizard-next:hover {
-      background: linear-gradient(135deg, #1f2047 0%, #292A5F 100%);
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(41, 42, 95, 0.3);
-    }
-    
-    .btn-wizard-submit {
-      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-      color: white;
-      border: none;
-    }
-    
-    .btn-wizard-submit:hover {
-      background: linear-gradient(135deg, #218838 0%, #1aa179 100%);
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+      font-size: 1.5rem;
     }
     
     /* Form Styling */
@@ -226,35 +179,54 @@
     
     .contact-entry {
       background: #f8f9fa;
-      border-radius: 8px;
-      padding: 20px;
-      margin-bottom: 15px;
-      border: 1px solid #dee2e6;
+      border-radius: 10px;
+      padding: 25px;
+      margin-bottom: 20px;
+      border: 2px solid #e9ecef;
       position: relative;
+      transition: all 0.3s;
+    }
+    
+    .contact-entry:hover {
+      border-color: #F3E600;
+      box-shadow: 0 4px 12px rgba(243, 230, 0, 0.15);
     }
     
     .contact-entry .btn-remove-contact {
       position: absolute;
-      top: 10px;
-      right: 10px;
+      top: 15px;
+      right: 15px;
+    }
+    
+    .contact-entry h6 {
+      color: #292A5F;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-left: 10px;
+      border-left: 4px solid #F3E600;
     }
     
     .btn-add-contact {
-      background-color: #F3E600;
+      background: linear-gradient(135deg, #F3E600 0%, #d4c700 100%);
       color: #292A5F;
       border: none;
-      font-weight: 500;
+      font-weight: 600;
+      padding: 12px 25px;
+      border-radius: 8px;
+      transition: all 0.3s;
     }
     
     .btn-add-contact:hover {
-      background-color: #d4c700;
+      background: linear-gradient(135deg, #d4c700 0%, #b5aa00 100%);
       color: #292A5F;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(243, 230, 0, 0.4);
     }
     
     .commercial-card {
       border: 2px solid #e9ecef;
-      border-radius: 8px;
-      padding: 15px;
+      border-radius: 10px;
+      padding: 20px;
       transition: all 0.3s;
       background: #f8f9fa;
     }
@@ -262,19 +234,21 @@
     .commercial-card:hover {
       border-color: #F3E600;
       background-color: #fffef5;
+      box-shadow: 0 4px 12px rgba(243, 230, 0, 0.15);
     }
     
     .commercial-avatar {
-      width: 50px;
-      height: 50px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       background: linear-gradient(135deg, #292A5F 0%, #F3E600 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
-      font-weight: 600;
-      font-size: 1.2rem;
+      font-weight: 700;
+      font-size: 1.4rem;
+      box-shadow: 0 4px 12px rgba(41, 42, 95, 0.2);
     }
     
     .select2-container--bootstrap-5 .select2-selection {
@@ -285,55 +259,144 @@
     .info-badge {
       background-color: #e7f1ff;
       color: #004085;
-      padding: 12px 15px;
-      border-radius: 8px;
+      padding: 15px 18px;
+      border-radius: 10px;
       border-left: 4px solid #0066cc;
-      margin-bottom: 15px;
-      font-size: 0.9rem;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     
     .info-badge i {
-      margin-right: 8px;
+      font-size: 1.2rem;
     }
     
     .warning-badge {
       background-color: #fff3cd;
       color: #856404;
-      padding: 12px 15px;
-      border-radius: 8px;
+      padding: 15px 18px;
+      border-radius: 10px;
       border-left: 4px solid #ffc107;
       margin-bottom: 25px;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     
     .warning-badge i {
-      margin-right: 8px;
+      font-size: 1.2rem;
     }
     
     .danger-zone {
-      border: 2px solid #dc3545;
-      border-radius: 8px;
-      padding: 20px;
-      margin-top: 30px;
-      background: #fff5f5;
+      border: 3px solid #dc3545;
+      border-radius: 12px;
+      padding: 25px;
+      margin-top: 40px;
+      background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
     }
     
-    .danger-zone h6 {
+    .danger-zone h5 {
       color: #dc3545;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .danger-zone p {
+      color: #721c24;
+      margin-bottom: 20px;
+    }
+    
+    .danger-zone .btn-danger {
       font-weight: 600;
-      margin-bottom: 10px;
+      padding: 12px 25px;
+      border-radius: 8px;
+    }
+    
+    /* Action Buttons */
+    .action-buttons {
+      position: sticky;
+      bottom: 0;
+      background: white;
+      padding: 20px 35px;
+      border-top: 2px solid #e9ecef;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+      margin: 0 -35px -35px -35px;
+      border-radius: 0 0 12px 12px;
+    }
+    
+    .btn-save {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      border: none;
+      font-weight: 600;
+      padding: 14px 35px;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+    
+    .btn-save:hover {
+      background: linear-gradient(135deg, #218838 0%, #1aa179 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+    }
+    
+    .btn-cancel {
+      background: #6c757d;
+      color: white;
+      border: none;
+      font-weight: 500;
+      padding: 14px 30px;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+    
+    .btn-cancel:hover {
+      background: #5a6268;
+      color: white;
+      transform: translateY(-2px);
     }
     
     /* Responsive */
     @media (max-width: 768px) {
-      .wizard-step-label {
-        font-size: 0.7rem;
+      .edit-tab-btn {
+        min-width: 100px;
+        padding: 15px 12px;
+        font-size: 0.85rem;
+        flex-direction: column;
+        gap: 5px;
       }
       
-      .wizard-step-circle {
-        width: 35px;
-        height: 35px;
-        font-size: 0.85rem;
+      .edit-tab-btn i {
+        font-size: 1rem;
+      }
+      
+      .edit-tab-btn span {
+        font-size: 0.75rem;
+      }
+      
+      .edit-tabs-content {
+        padding: 20px;
+      }
+      
+      .action-buttons {
+        padding: 15px 20px;
+        margin: 0 -20px -20px -20px;
+        flex-direction: column-reverse;
+      }
+      
+      .action-buttons .btn {
+        width: 100%;
       }
     }
   </style>
@@ -503,60 +566,59 @@
         <!-- Info Badge -->
         <div class="info-badge">
           <i class="fas fa-info-circle"></i>
-          Les champs marqués d'un astérisque (<span class="text-danger">*</span>) sont obligatoires. Modifiez les informations puis enregistrez.
+          <span>Les champs marqués d'un astérisque (<span class="text-danger fw-bold">*</span>) sont obligatoires. Cliquez sur les onglets pour naviguer rapidement entre les sections.</span>
         </div>
         
         <!-- Warning Badge -->
         <div class="warning-badge">
           <i class="fas fa-exclamation-triangle"></i>
-          Dernière modification le <strong>15 Nov 2024 à 14:32</strong> par <strong>Sophie Martin</strong>
+          <span>Dernière modification le <strong>15 Nov 2024 à 14:32</strong> par <strong>Sophie Martin</strong></span>
         </div>
 
-        <!-- Wizard Container -->
-        <div class="wizard-container">
+        <!-- Edit Tabs Container -->
+        <div class="edit-tabs-container">
           
-          <!-- Wizard Steps Progress -->
-          <div class="wizard-steps">
-            <div class="wizard-steps-progress" id="wizardProgress" style="width: 20%;"></div>
-            
-            <div class="wizard-step active" data-step="1">
-              <div class="wizard-step-circle">1</div>
-              <div class="wizard-step-label">Entreprise</div>
-            </div>
-            
-            <div class="wizard-step" data-step="2">
-              <div class="wizard-step-circle">2</div>
-              <div class="wizard-step-label">Adresse</div>
-            </div>
-            
-            <div class="wizard-step" data-step="3">
-              <div class="wizard-step-circle">3</div>
-              <div class="wizard-step-label">Contacts</div>
-            </div>
-            
-            <div class="wizard-step" data-step="4">
-              <div class="wizard-step-circle">4</div>
-              <div class="wizard-step-label">Commercial</div>
-            </div>
-            
-            <div class="wizard-step" data-step="5">
-              <div class="wizard-step-circle">5</div>
-              <div class="wizard-step-label">Finalisation</div>
-            </div>
-          </div>
+          <!-- Tab Navigation -->
+          <nav class="edit-tabs-nav" role="tablist">
+            <button class="edit-tab-btn active" data-tab="entreprise" role="tab">
+              <i class="fas fa-building"></i>
+              <span>Entreprise</span>
+              <span class="tab-status"></span>
+            </button>
+            <button class="edit-tab-btn" data-tab="adresse" role="tab">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Adresse</span>
+              <span class="tab-status"></span>
+            </button>
+            <button class="edit-tab-btn" data-tab="contacts" role="tab">
+              <i class="fas fa-users"></i>
+              <span>Contacts</span>
+              <span class="tab-status"></span>
+            </button>
+            <button class="edit-tab-btn" data-tab="commercial" role="tab">
+              <i class="fas fa-user-tie"></i>
+              <span>Commercial</span>
+              <span class="tab-status"></span>
+            </button>
+            <button class="edit-tab-btn" data-tab="infos" role="tab">
+              <i class="fas fa-info-circle"></i>
+              <span>Infos</span>
+              <span class="tab-status"></span>
+            </button>
+          </nav>
 
           <!-- Form -->
-          <form id="customerWizardForm" novalidate>
+          <form id="customerEditForm" novalidate>
             
-            <!-- Wizard Content -->
-            <div class="wizard-content">
+            <!-- Tab Content -->
+            <div class="edit-tabs-content">
               
-              <!-- Step 1: Informations Entreprise -->
-              <div class="wizard-tab active" data-tab="1">
-                <div class="wizard-tab-title">
+              <!-- Tab 1: Informations Entreprise -->
+              <div class="edit-tab-pane active" data-pane="entreprise" role="tabpanel">
+                <h2 class="section-title">
                   <i class="fas fa-building"></i>
                   Informations de l'Entreprise
-                </div>
+                </h2>
                 
                 <div class="row">
                   <div class="col-md-6 mb-3">
@@ -624,16 +686,16 @@
                 
                 <div class="mb-3">
                   <label class="form-label">Description</label>
-                  <textarea class="form-control" name="description" rows="3" placeholder="Brève description de l'entreprise et de ses activités...">Entreprise spécialisée dans l'installation de panneaux solaires pour les professionnels et les collectivités. Leader régional avec plus de 500 installations réalisées.</textarea>
+                  <textarea class="form-control" name="description" rows="4" placeholder="Brève description de l'entreprise et de ses activités...">Entreprise spécialisée dans l'installation de panneaux solaires pour les professionnels et les collectivités. Leader régional avec plus de 500 installations réalisées.</textarea>
                 </div>
               </div>
 
-              <!-- Step 2: Adresse -->
-              <div class="wizard-tab" data-tab="2">
-                <div class="wizard-tab-title">
+              <!-- Tab 2: Adresse -->
+              <div class="edit-tab-pane" data-pane="adresse" role="tabpanel">
+                <h2 class="section-title">
                   <i class="fas fa-map-marker-alt"></i>
                   Adresse de l'Entreprise
-                </div>
+                </h2>
                 
                 <div class="mb-3">
                   <label class="form-label required-field">Adresse</label>
@@ -670,12 +732,12 @@
                 </div>
               </div>
 
-              <!-- Step 3: Contacts -->
-              <div class="wizard-tab" data-tab="3">
-                <div class="wizard-tab-title">
+              <!-- Tab 3: Contacts -->
+              <div class="edit-tab-pane" data-pane="contacts" role="tabpanel">
+                <h2 class="section-title">
                   <i class="fas fa-users"></i>
                   Personnes de Contact
-                </div>
+                </h2>
                 
                 <div id="contacts-container">
                   <!-- Contact 1 (Existant) -->
@@ -684,10 +746,10 @@
                       <i class="fas fa-times"></i>
                     </button>
                     
-                    <h6 class="mb-3 text-muted">Contact Principal</h6>
+                    <h6>Contact Principal</h6>
                     
                     <div class="row">
-                      <div class="col-md-3 mb-3">
+                      <div class="col-md-2 mb-3">
                         <label class="form-label">Civilité</label>
                         <select class="form-select" name="contact_1_civility">
                           <option value="M." selected>M.</option>
@@ -696,7 +758,7 @@
                         </select>
                       </div>
                       
-                      <div class="col-md-4 mb-3">
+                      <div class="col-md-5 mb-3">
                         <label class="form-label required-field">Prénom</label>
                         <input type="text" class="form-control" name="contact_1_firstname" value="Jean" required>
                         <div class="invalid-feedback">Champ obligatoire.</div>
@@ -735,10 +797,10 @@
                       <i class="fas fa-times"></i>
                     </button>
                     
-                    <h6 class="mb-3 text-muted">Contact 2</h6>
+                    <h6>Contact 2</h6>
                     
                     <div class="row">
-                      <div class="col-md-3 mb-3">
+                      <div class="col-md-2 mb-3">
                         <label class="form-label">Civilité</label>
                         <select class="form-select" name="contact_2_civility">
                           <option value="M.">M.</option>
@@ -747,7 +809,7 @@
                         </select>
                       </div>
                       
-                      <div class="col-md-4 mb-3">
+                      <div class="col-md-5 mb-3">
                         <label class="form-label">Prénom</label>
                         <input type="text" class="form-control" name="contact_2_firstname" value="Marie">
                       </div>
@@ -782,14 +844,14 @@
                 </button>
               </div>
 
-              <!-- Step 4: Commercial Assigné -->
-              <div class="wizard-tab" data-tab="4">
-                <div class="wizard-tab-title">
+              <!-- Tab 4: Commercial Assigné -->
+              <div class="edit-tab-pane" data-pane="commercial" role="tabpanel">
+                <h2 class="section-title">
                   <i class="fas fa-user-tie"></i>
                   Commercial Responsable
-                </div>
+                </h2>
                 
-                <div class="mb-3">
+                <div class="mb-4">
                   <label class="form-label required-field">Sélectionnez le commercial responsable</label>
                   <select class="form-select" name="assigned_commercial" id="commercialSelect" required>
                     <option value="">Choisissez un commercial...</option>
@@ -804,31 +866,31 @@
                 </div>
                 
                 <!-- Carte du commercial sélectionné -->
-                <div id="commercialCard" class="commercial-card mt-3">
+                <div id="commercialCard" class="commercial-card">
                   <div class="d-flex align-items-center">
                     <div class="commercial-avatar me-3" id="commercialAvatar">SM</div>
                     <div class="flex-grow-1">
-                      <h6 class="mb-1" id="commercialName">Sophie Martin</h6>
-                      <p class="mb-1 text-muted small" id="commercialEmail">
+                      <h5 class="mb-2 fw-bold" id="commercialName">Sophie Martin</h5>
+                      <p class="mb-1 text-muted" id="commercialEmail">
                         <i class="fas fa-envelope me-2"></i>sophie.martin@eureka.com
                       </p>
-                      <p class="mb-0 text-muted small" id="commercialClients">
-                        <i class="fas fa-users me-2"></i>45 clients
+                      <p class="mb-0 text-muted" id="commercialClients">
+                        <i class="fas fa-users me-2"></i>45 clients assignés
                       </p>
                     </div>
                     <div>
-                      <span class="badge bg-success">Assigné</span>
+                      <span class="badge bg-success" style="font-size: 0.9rem; padding: 8px 15px;">Assigné</span>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Step 5: Informations Complémentaires -->
-              <div class="wizard-tab" data-tab="5">
-                <div class="wizard-tab-title">
+              <!-- Tab 5: Informations Complémentaires -->
+              <div class="edit-tab-pane" data-pane="infos" role="tabpanel">
+                <h2 class="section-title">
                   <i class="fas fa-info-circle"></i>
                   Informations Complémentaires
-                </div>
+                </h2>
                 
                 <div class="row">
                   <div class="col-md-6 mb-3">
@@ -869,43 +931,34 @@
                     <option value="particulier">Particulier</option>
                     <option value="international">International</option>
                   </select>
-                  <div class="form-text">Maintenez Ctrl/Cmd pour sélectionner plusieurs tags</div>
+                  <div class="form-text">Sélectionnez plusieurs tags pour catégoriser le client</div>
                 </div>
                 
-                <div class="mb-3">
+                <div class="mb-4">
                   <label class="form-label">Notes internes</label>
-                  <textarea class="form-control" name="internal_notes" rows="4" placeholder="Notes visibles uniquement par l'équipe interne...">Client très satisfait de nos services. A recommandé 3 nouveaux clients. Prévoir une visite de suivi au Q1 2025.</textarea>
+                  <textarea class="form-control" name="internal_notes" rows="5" placeholder="Notes visibles uniquement par l'équipe interne...">Client très satisfait de nos services. A recommandé 3 nouveaux clients. Prévoir une visite de suivi au Q1 2025.</textarea>
                 </div>
                 
                 <!-- Danger Zone -->
                 <div class="danger-zone">
-                  <h6><i class="fas fa-exclamation-triangle me-2"></i>Zone Dangereuse</h6>
-                  <p class="text-muted mb-3">La suppression d'un client est irréversible. Toutes les données associées (dossiers, documents, historique) seront définitivement perdues.</p>
+                  <h5><i class="fas fa-exclamation-triangle"></i>Zone Dangereuse</h5>
+                  <p class="mb-0">La suppression d'un client est <strong>irréversible</strong>. Toutes les données associées (dossiers, documents, historique) seront définitivement perdues.</p>
                   <button type="button" class="btn btn-danger" onclick="confirmDelete()">
-                    <i class="fas fa-trash me-2"></i>Supprimer ce client
+                    <i class="fas fa-trash me-2"></i>Supprimer définitivement ce client
                   </button>
                 </div>
               </div>
               
             </div>
 
-            <!-- Wizard Navigation -->
-            <div class="wizard-navigation">
-              <button type="button" class="btn btn-wizard-prev" id="btnPrev" style="display: none;">
-                <i class="fas fa-arrow-left me-2"></i>Précédent
+            <!-- Action Buttons (Sticky Bottom) -->
+            <div class="action-buttons">
+              <a href="customer-detail.html" class="btn btn-cancel">
+                <i class="fas fa-times me-2"></i>Annuler les modifications
+              </a>
+              <button type="submit" class="btn btn-save">
+                <i class="fas fa-save me-2"></i>Enregistrer les modifications
               </button>
-              
-              <div class="ms-auto d-flex gap-2">
-                <a href="customer-detail.html" class="btn btn-outline-secondary">
-                  <i class="fas fa-times me-2"></i>Annuler
-                </a>
-                <button type="button" class="btn btn-wizard-next" id="btnNext">
-                  Suivant<i class="fas fa-arrow-right ms-2"></i>
-                </button>
-                <button type="submit" class="btn btn-wizard-submit" id="btnSubmit" style="display: none;">
-                  <i class="fas fa-save me-2"></i>Enregistrer les modifications
-                </button>
-              </div>
             </div>
 
           </form>
@@ -963,18 +1016,23 @@
   <script src="../assets/js/components.js"></script>
   
   <script>
-    let currentStep = 1;
-    const totalSteps = 5;
     let contactCounter = 2; // Already have 2 contacts
     const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
     const companyName = 'Tech Solar Industries';
     
-    // Initialize Select2 for tags
+    // Initialize on page load
     $(document).ready(function() {
+      // Initialize Select2 for tags
       $('#tagsSelect').select2({
         theme: 'bootstrap-5',
         placeholder: 'Sélectionnez des tags',
         allowClear: true
+      });
+      
+      // Tab navigation
+      $('.edit-tab-btn').on('click', function() {
+        const targetTab = $(this).data('tab');
+        switchTab(targetTab);
       });
       
       // Commercial select change
@@ -991,7 +1049,7 @@
           $('#commercialAvatar').text(initials);
           $('#commercialName').text(name);
           $('#commercialEmail').html('<i class="fas fa-envelope me-2"></i>' + email);
-          $('#commercialClients').html('<i class="fas fa-users me-2"></i>' + clients + ' clients');
+          $('#commercialClients').html('<i class="fas fa-users me-2"></i>' + clients + ' clients assignés');
           $('#commercialCard').fadeIn();
         } else {
           $('#commercialCard').fadeOut();
@@ -1003,89 +1061,89 @@
         const value = $(this).val().trim();
         $('#confirmDeleteBtn').prop('disabled', value !== companyName);
       });
+      
+      // Real-time validation on input change
+      $('input[required], select[required], textarea[required]').on('blur change', function() {
+        validateField($(this));
+        updateTabValidationStatus();
+      });
+      
+      // Initial validation status update
+      updateTabValidationStatus();
     });
     
-    // Wizard Navigation
-    function updateWizard() {
-      // Update steps
-      $('.wizard-step').removeClass('active completed');
-      $('.wizard-tab').removeClass('active');
+    // Switch between tabs
+    function switchTab(tabName) {
+      // Update tab buttons
+      $('.edit-tab-btn').removeClass('active');
+      $(`.edit-tab-btn[data-tab="${tabName}"]`).addClass('active');
       
-      for (let i = 1; i <= totalSteps; i++) {
-        if (i < currentStep) {
-          $(`.wizard-step[data-step="${i}"]`).addClass('completed');
-        } else if (i === currentStep) {
-          $(`.wizard-step[data-step="${i}"]`).addClass('active');
-          $(`.wizard-tab[data-tab="${i}"]`).addClass('active');
-        }
-      }
+      // Update tab panes
+      $('.edit-tab-pane').removeClass('active');
+      $(`.edit-tab-pane[data-pane="${tabName}"]`).addClass('active');
       
-      // Update progress bar
-      const progress = (currentStep / totalSteps) * 100;
-      $('#wizardProgress').css('width', progress + '%');
-      
-      // Update buttons
-      if (currentStep === 1) {
-        $('#btnPrev').hide();
-      } else {
-        $('#btnPrev').show();
-      }
-      
-      if (currentStep === totalSteps) {
-        $('#btnNext').hide();
-        $('#btnSubmit').show();
-      } else {
-        $('#btnNext').show();
-        $('#btnSubmit').hide();
-      }
-      
-      // Scroll to top
-      $('.wizard-content').scrollTop(0);
+      // Scroll to top of content
+      $('.edit-tabs-content').scrollTop(0);
     }
     
-    // Validate current step
-    function validateStep(step) {
-      const currentTab = $(`.wizard-tab[data-tab="${step}"]`);
-      const inputs = currentTab.find('input[required], select[required], textarea[required]');
+    // Validate individual field
+    function validateField(field) {
+      if (field[0].checkValidity()) {
+        field.removeClass('is-invalid').addClass('is-valid');
+        return true;
+      } else {
+        field.removeClass('is-valid').addClass('is-invalid');
+        return false;
+      }
+    }
+    
+    // Update validation status indicators on tabs
+    function updateTabValidationStatus() {
+      // Map of tabs and their corresponding panes
+      const tabs = ['entreprise', 'adresse', 'contacts', 'commercial', 'infos'];
+      
+      tabs.forEach(tabName => {
+        const pane = $(`.edit-tab-pane[data-pane="${tabName}"]`);
+        const requiredFields = pane.find('input[required], select[required], textarea[required]');
+        const tabBtn = $(`.edit-tab-btn[data-tab="${tabName}"]`);
+        
+        let allValid = true;
+        let hasError = false;
+        
+        requiredFields.each(function() {
+          if (!this.checkValidity()) {
+            allValid = false;
+            if ($(this).hasClass('is-invalid')) {
+              hasError = true;
+            }
+          }
+        });
+        
+        // Update tab status
+        if (hasError) {
+          tabBtn.removeClass('validated').addClass('has-error');
+        } else if (allValid && requiredFields.length > 0) {
+          tabBtn.removeClass('has-error').addClass('validated');
+        } else {
+          tabBtn.removeClass('validated has-error');
+        }
+      });
+    }
+    
+    // Validate entire tab
+    function validateTab(tabName) {
+      const pane = $(`.edit-tab-pane[data-pane="${tabName}"]`);
+      const requiredFields = pane.find('input[required], select[required], textarea[required]');
       let isValid = true;
       
-      inputs.each(function() {
-        if (!this.checkValidity()) {
+      requiredFields.each(function() {
+        if (!validateField($(this))) {
           isValid = false;
-          $(this).addClass('is-invalid');
-        } else {
-          $(this).removeClass('is-invalid');
         }
       });
       
-      if (!isValid) {
-        const firstInvalid = currentTab.find('.is-invalid')[0];
-        if (firstInvalid) {
-          firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          firstInvalid.focus();
-        }
-      }
-      
       return isValid;
     }
-    
-    // Next button
-    $('#btnNext').on('click', function() {
-      if (validateStep(currentStep)) {
-        if (currentStep < totalSteps) {
-          currentStep++;
-          updateWizard();
-        }
-      }
-    });
-    
-    // Previous button
-    $('#btnPrev').on('click', function() {
-      if (currentStep > 1) {
-        currentStep--;
-        updateWizard();
-      }
-    });
     
     // Add contact
     function addContact() {
@@ -1096,10 +1154,10 @@
             <i class="fas fa-times"></i>
           </button>
           
-          <h6 class="mb-3 text-muted">Contact ${contactCounter}</h6>
+          <h6>Contact ${contactCounter}</h6>
           
           <div class="row">
-            <div class="col-md-3 mb-3">
+            <div class="col-md-2 mb-3">
               <label class="form-label">Civilité</label>
               <select class="form-select" name="contact_${contactCounter}_civility">
                 <option value="M.">M.</option>
@@ -1108,7 +1166,7 @@
               </select>
             </div>
             
-            <div class="col-md-4 mb-3">
+            <div class="col-md-5 mb-3">
               <label class="form-label">Prénom</label>
               <input type="text" class="form-control" name="contact_${contactCounter}_firstname">
             </div>
@@ -1163,29 +1221,39 @@
     }
     
     // Form submission
-    $('#customerWizardForm').on('submit', function(e) {
+    $('#customerEditForm').on('submit', function(e) {
       e.preventDefault();
       
-      if (validateStep(currentStep)) {
-        const formData = new FormData(this);
-        console.log('Form data:', Object.fromEntries(formData));
-        
-        // Show success message
-        alert('Modifications enregistrées avec succès !');
-        
-        // Redirect to customer detail
-        window.location.href = 'customer-detail.html';
-      }
-    });
-    
-    // Allow Enter key to go to next step
-    $('#customerWizardForm').on('keypress', function(e) {
-      if (e.which === 13 && e.target.tagName !== 'TEXTAREA') {
-        e.preventDefault();
-        if (currentStep < totalSteps) {
-          $('#btnNext').click();
+      // Validate all tabs
+      const tabs = ['entreprise', 'adresse', 'contacts', 'commercial', 'infos'];
+      let allValid = true;
+      let firstInvalidTab = null;
+      
+      tabs.forEach(tabName => {
+        if (!validateTab(tabName)) {
+          allValid = false;
+          if (!firstInvalidTab) {
+            firstInvalidTab = tabName;
+          }
         }
+      });
+      
+      if (!allValid) {
+        // Switch to first invalid tab
+        switchTab(firstInvalidTab);
+        alert('Veuillez remplir tous les champs obligatoires.');
+        updateTabValidationStatus();
+        return;
       }
+      
+      const formData = new FormData(this);
+      console.log('Form data:', Object.fromEntries(formData));
+      
+      // Show success message
+      alert('Modifications enregistrées avec succès !');
+      
+      // Redirect to customer detail
+      window.location.href = 'customer-detail.html';
     });
   </script>
 </body>
