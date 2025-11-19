@@ -18,30 +18,195 @@
   <link href="../assets/css/components.css" rel="stylesheet">
   
   <style>
-    .form-section {
+    /* Wizard Container */
+    .wizard-container {
       background: white;
       border-radius: 12px;
-      padding: 25px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      padding: 30px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     }
     
-    .form-section-title {
-      font-size: 1.1rem;
+    /* Wizard Steps Progress */
+    .wizard-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      position: relative;
+    }
+    
+    .wizard-steps::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #e9ecef;
+      z-index: 0;
+    }
+    
+    .wizard-steps-progress {
+      position: absolute;
+      top: 20px;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #292A5F 0%, #F3E600 100%);
+      z-index: 1;
+      transition: width 0.4s ease;
+    }
+    
+    .wizard-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .wizard-step-circle {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid #e9ecef;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      color: #adb5bd;
+      margin-bottom: 10px;
+      transition: all 0.3s ease;
+    }
+    
+    .wizard-step.active .wizard-step-circle {
+      background: linear-gradient(135deg, #292A5F 0%, #F3E600 100%);
+      border-color: #292A5F;
+      color: white;
+      transform: scale(1.1);
+    }
+    
+    .wizard-step.completed .wizard-step-circle {
+      background: #28a745;
+      border-color: #28a745;
+      color: white;
+    }
+    
+    .wizard-step-label {
+      font-size: 0.85rem;
+      color: #6c757d;
+      text-align: center;
+      font-weight: 500;
+    }
+    
+    .wizard-step.active .wizard-step-label {
+      color: #292A5F;
+      font-weight: 600;
+    }
+    
+    .wizard-step.completed .wizard-step-label {
+      color: #28a745;
+    }
+    
+    /* Wizard Content */
+    .wizard-content {
+      min-height: 400px;
+      position: relative;
+    }
+    
+    .wizard-tab {
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+    
+    .wizard-tab.active {
+      display: block;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    .wizard-tab-title {
+      font-size: 1.5rem;
       font-weight: 600;
       color: #292A5F;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
       border-bottom: 2px solid #F3E600;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
     
-    .form-section-title i {
+    .wizard-tab-title i {
       color: #F3E600;
+      font-size: 1.3rem;
     }
     
+    /* Wizard Navigation Buttons */
+    .wizard-navigation {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #e9ecef;
+    }
+    
+    .btn-wizard-prev,
+    .btn-wizard-next,
+    .btn-wizard-submit {
+      padding: 12px 30px;
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-wizard-prev {
+      background: #6c757d;
+      color: white;
+      border: none;
+    }
+    
+    .btn-wizard-prev:hover {
+      background: #5a6268;
+      color: white;
+    }
+    
+    .btn-wizard-next {
+      background: linear-gradient(135deg, #292A5F 0%, #3a3b7f 100%);
+      color: white;
+      border: none;
+    }
+    
+    .btn-wizard-next:hover {
+      background: linear-gradient(135deg, #1f2047 0%, #292A5F 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(41, 42, 95, 0.3);
+    }
+    
+    .btn-wizard-submit {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      border: none;
+    }
+    
+    .btn-wizard-submit:hover {
+      background: linear-gradient(135deg, #218838 0%, #1aa179 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+    
+    /* Form Styling */
     .required-field::after {
       content: " *";
       color: #dc3545;
@@ -57,20 +222,6 @@
     .form-select:focus {
       border-color: #F3E600;
       box-shadow: 0 0 0 0.2rem rgba(243, 230, 0, 0.25);
-    }
-    
-    .btn-eureka-primary {
-      background-color: #292A5F;
-      border-color: #292A5F;
-      color: white;
-      padding: 12px 30px;
-      font-weight: 500;
-    }
-    
-    .btn-eureka-primary:hover {
-      background-color: #1f2047;
-      border-color: #1f2047;
-      color: white;
     }
     
     .contact-entry {
@@ -105,6 +256,7 @@
       border-radius: 8px;
       padding: 15px;
       transition: all 0.3s;
+      background: #f8f9fa;
     }
     
     .commercial-card:hover {
@@ -136,11 +288,25 @@
       padding: 12px 15px;
       border-radius: 8px;
       border-left: 4px solid #0066cc;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      font-size: 0.9rem;
     }
     
     .info-badge i {
       margin-right: 8px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+      .wizard-step-label {
+        font-size: 0.7rem;
+      }
+      
+      .wizard-step-circle {
+        width: 35px;
+        height: 35px;
+        font-size: 0.85rem;
+      }
     }
   </style>
 </head>
@@ -306,301 +472,352 @@
         <!-- Info Badge -->
         <div class="info-badge">
           <i class="fas fa-info-circle"></i>
-          Les champs marqués d'un astérisque (<span class="text-danger">*</span>) sont obligatoires.
+          Les champs marqués d'un astérisque (<span class="text-danger">*</span>) sont obligatoires. Complétez les 5 étapes pour créer le client.
         </div>
 
-        <!-- Form -->
-        <form id="customerForm" novalidate>
-          <!-- Informations Entreprise -->
-          <div class="form-section">
-            <div class="form-section-title">
-              <i class="fas fa-building"></i>
-              Informations Entreprise
+        <!-- Wizard Container -->
+        <div class="wizard-container">
+          
+          <!-- Wizard Steps Progress -->
+          <div class="wizard-steps">
+            <div class="wizard-steps-progress" id="wizardProgress" style="width: 20%;"></div>
+            
+            <div class="wizard-step active" data-step="1">
+              <div class="wizard-step-circle">1</div>
+              <div class="wizard-step-label">Entreprise</div>
             </div>
             
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label required-field">Nom de l'entreprise</label>
-                <input type="text" class="form-control" name="company_name" required>
-                <div class="invalid-feedback">Veuillez entrer le nom de l'entreprise.</div>
-              </div>
-              
-              <div class="col-md-6 mb-3">
-                <label class="form-label required-field">Type d'entreprise</label>
-                <select class="form-select" name="company_type" required>
-                  <option value="">Sélectionnez...</option>
-                  <option value="SA">SA (Société Anonyme)</option>
-                  <option value="SARL">SARL (Société à Responsabilité Limitée)</option>
-                  <option value="SAS">SAS (Société par Actions Simplifiée)</option>
-                  <option value="SASU">SASU (Société par Actions Simplifiée Unipersonnelle)</option>
-                  <option value="EURL">EURL (Entreprise Unipersonnelle à Responsabilité Limitée)</option>
-                  <option value="EI">EI (Entreprise Individuelle)</option>
-                  <option value="AUTO">Auto-entrepreneur</option>
-                  <option value="AUTRE">Autre</option>
-                </select>
-                <div class="invalid-feedback">Veuillez sélectionner un type d'entreprise.</div>
-              </div>
+            <div class="wizard-step" data-step="2">
+              <div class="wizard-step-circle">2</div>
+              <div class="wizard-step-label">Adresse</div>
             </div>
             
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label required-field">SIRET</label>
-                <input type="text" class="form-control" name="siret" pattern="[0-9]{14}" required>
-                <div class="form-text">14 chiffres sans espaces</div>
-                <div class="invalid-feedback">Veuillez entrer un SIRET valide (14 chiffres).</div>
-              </div>
-              
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Numéro TVA</label>
-                <input type="text" class="form-control" name="tva_number">
-              </div>
+            <div class="wizard-step" data-step="3">
+              <div class="wizard-step-circle">3</div>
+              <div class="wizard-step-label">Contacts</div>
             </div>
             
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label required-field">Secteur d'activité</label>
-                <select class="form-select" name="sector" required>
-                  <option value="">Sélectionnez...</option>
-                  <option value="energie_renouvelable">Énergie Renouvelable</option>
-                  <option value="industrie">Industrie</option>
-                  <option value="services">Services</option>
-                  <option value="commerce">Commerce</option>
-                  <option value="batiment">Bâtiment et Travaux Publics</option>
-                  <option value="agriculture">Agriculture</option>
-                  <option value="transport">Transport et Logistique</option>
-                  <option value="technologie">Technologie</option>
-                  <option value="sante">Santé</option>
-                  <option value="education">Éducation</option>
-                  <option value="autre">Autre</option>
-                </select>
-                <div class="invalid-feedback">Veuillez sélectionner un secteur d'activité.</div>
-              </div>
-              
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Site web</label>
-                <input type="url" class="form-control" name="website" placeholder="https://www.exemple.com">
-              </div>
+            <div class="wizard-step" data-step="4">
+              <div class="wizard-step-circle">4</div>
+              <div class="wizard-step-label">Commercial</div>
             </div>
             
-            <div class="mb-3">
-              <label class="form-label">Description</label>
-              <textarea class="form-control" name="description" rows="3" placeholder="Brève description de l'entreprise et de ses activités..."></textarea>
+            <div class="wizard-step" data-step="5">
+              <div class="wizard-step-circle">5</div>
+              <div class="wizard-step-label">Finalisation</div>
             </div>
           </div>
 
-          <!-- Adresse -->
-          <div class="form-section">
-            <div class="form-section-title">
-              <i class="fas fa-map-marker-alt"></i>
-              Adresse
-            </div>
+          <!-- Form -->
+          <form id="customerWizardForm" novalidate>
             
-            <div class="mb-3">
-              <label class="form-label required-field">Adresse</label>
-              <input type="text" class="form-control" name="address" required>
-              <div class="invalid-feedback">Veuillez entrer l'adresse.</div>
-            </div>
-            
-            <div class="row">
-              <div class="col-md-4 mb-3">
-                <label class="form-label required-field">Code postal</label>
-                <input type="text" class="form-control" name="postal_code" pattern="[0-9]{5}" required>
-                <div class="invalid-feedback">Veuillez entrer un code postal valide (5 chiffres).</div>
-              </div>
+            <!-- Wizard Content -->
+            <div class="wizard-content">
               
-              <div class="col-md-4 mb-3">
-                <label class="form-label required-field">Ville</label>
-                <input type="text" class="form-control" name="city" required>
-                <div class="invalid-feedback">Veuillez entrer la ville.</div>
-              </div>
-              
-              <div class="col-md-4 mb-3">
-                <label class="form-label required-field">Pays</label>
-                <select class="form-select" name="country" required>
-                  <option value="">Sélectionnez...</option>
-                  <option value="FR" selected>France</option>
-                  <option value="BE">Belgique</option>
-                  <option value="CH">Suisse</option>
-                  <option value="LU">Luxembourg</option>
-                  <option value="CA">Canada</option>
-                  <option value="OTHER">Autre</option>
-                </select>
-                <div class="invalid-feedback">Veuillez sélectionner un pays.</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Contacts -->
-          <div class="form-section">
-            <div class="form-section-title">
-              <i class="fas fa-users"></i>
-              Personnes de Contact
-            </div>
-            
-            <div id="contacts-container">
-              <!-- Contact 1 (par défaut) -->
-              <div class="contact-entry" data-contact-index="1">
-                <button type="button" class="btn btn-sm btn-danger btn-remove-contact" onclick="removeContact(1)" style="display: none;">
-                  <i class="fas fa-times"></i>
-                </button>
-                
-                <h6 class="mb-3 text-muted">Contact Principal</h6>
+              <!-- Step 1: Informations Entreprise -->
+              <div class="wizard-tab active" data-tab="1">
+                <div class="wizard-tab-title">
+                  <i class="fas fa-building"></i>
+                  Informations de l'Entreprise
+                </div>
                 
                 <div class="row">
-                  <div class="col-md-3 mb-3">
-                    <label class="form-label">Civilité</label>
-                    <select class="form-select" name="contact_1_civility">
-                      <option value="M.">M.</option>
-                      <option value="Mme">Mme</option>
-                      <option value="Mlle">Mlle</option>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label required-field">Nom de l'entreprise</label>
+                    <input type="text" class="form-control" name="company_name" required>
+                    <div class="invalid-feedback">Veuillez entrer le nom de l'entreprise.</div>
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label required-field">Type d'entreprise</label>
+                    <select class="form-select" name="company_type" required>
+                      <option value="">Sélectionnez...</option>
+                      <option value="SA">SA (Société Anonyme)</option>
+                      <option value="SARL">SARL (Société à Responsabilité Limitée)</option>
+                      <option value="SAS">SAS (Société par Actions Simplifiée)</option>
+                      <option value="SASU">SASU (Société par Actions Simplifiée Unipersonnelle)</option>
+                      <option value="EURL">EURL (Entreprise Unipersonnelle à Responsabilité Limitée)</option>
+                      <option value="EI">EI (Entreprise Individuelle)</option>
+                      <option value="AUTO">Auto-entrepreneur</option>
+                      <option value="AUTRE">Autre</option>
+                    </select>
+                    <div class="invalid-feedback">Veuillez sélectionner un type d'entreprise.</div>
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label required-field">SIRET</label>
+                    <input type="text" class="form-control" name="siret" pattern="[0-9]{14}" required>
+                    <div class="form-text">14 chiffres sans espaces</div>
+                    <div class="invalid-feedback">Veuillez entrer un SIRET valide (14 chiffres).</div>
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Numéro TVA</label>
+                    <input type="text" class="form-control" name="tva_number">
+                  </div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label required-field">Secteur d'activité</label>
+                    <select class="form-select" name="sector" required>
+                      <option value="">Sélectionnez...</option>
+                      <option value="energie_renouvelable">Énergie Renouvelable</option>
+                      <option value="industrie">Industrie</option>
+                      <option value="services">Services</option>
+                      <option value="commerce">Commerce</option>
+                      <option value="batiment">Bâtiment et Travaux Publics</option>
+                      <option value="agriculture">Agriculture</option>
+                      <option value="transport">Transport et Logistique</option>
+                      <option value="technologie">Technologie</option>
+                      <option value="sante">Santé</option>
+                      <option value="education">Éducation</option>
+                      <option value="autre">Autre</option>
+                    </select>
+                    <div class="invalid-feedback">Veuillez sélectionner un secteur d'activité.</div>
+                  </div>
+                  
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Site web</label>
+                    <input type="url" class="form-control" name="website" placeholder="https://www.exemple.com">
+                  </div>
+                </div>
+                
+                <div class="mb-3">
+                  <label class="form-label">Description</label>
+                  <textarea class="form-control" name="description" rows="3" placeholder="Brève description de l'entreprise et de ses activités..."></textarea>
+                </div>
+              </div>
+
+              <!-- Step 2: Adresse -->
+              <div class="wizard-tab" data-tab="2">
+                <div class="wizard-tab-title">
+                  <i class="fas fa-map-marker-alt"></i>
+                  Adresse de l'Entreprise
+                </div>
+                
+                <div class="mb-3">
+                  <label class="form-label required-field">Adresse</label>
+                  <input type="text" class="form-control" name="address" required>
+                  <div class="invalid-feedback">Veuillez entrer l'adresse.</div>
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label required-field">Code postal</label>
+                    <input type="text" class="form-control" name="postal_code" pattern="[0-9]{5}" required>
+                    <div class="invalid-feedback">Veuillez entrer un code postal valide (5 chiffres).</div>
+                  </div>
+                  
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label required-field">Ville</label>
+                    <input type="text" class="form-control" name="city" required>
+                    <div class="invalid-feedback">Veuillez entrer la ville.</div>
+                  </div>
+                  
+                  <div class="col-md-4 mb-3">
+                    <label class="form-label required-field">Pays</label>
+                    <select class="form-select" name="country" required>
+                      <option value="">Sélectionnez...</option>
+                      <option value="FR" selected>France</option>
+                      <option value="BE">Belgique</option>
+                      <option value="CH">Suisse</option>
+                      <option value="LU">Luxembourg</option>
+                      <option value="CA">Canada</option>
+                      <option value="OTHER">Autre</option>
+                    </select>
+                    <div class="invalid-feedback">Veuillez sélectionner un pays.</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 3: Contacts -->
+              <div class="wizard-tab" data-tab="3">
+                <div class="wizard-tab-title">
+                  <i class="fas fa-users"></i>
+                  Personnes de Contact
+                </div>
+                
+                <div id="contacts-container">
+                  <!-- Contact 1 (par défaut) -->
+                  <div class="contact-entry" data-contact-index="1">
+                    <button type="button" class="btn btn-sm btn-danger btn-remove-contact" onclick="removeContact(1)" style="display: none;">
+                      <i class="fas fa-times"></i>
+                    </button>
+                    
+                    <h6 class="mb-3 text-muted">Contact Principal</h6>
+                    
+                    <div class="row">
+                      <div class="col-md-3 mb-3">
+                        <label class="form-label">Civilité</label>
+                        <select class="form-select" name="contact_1_civility">
+                          <option value="M.">M.</option>
+                          <option value="Mme">Mme</option>
+                          <option value="Mlle">Mlle</option>
+                        </select>
+                      </div>
+                      
+                      <div class="col-md-4 mb-3">
+                        <label class="form-label required-field">Prénom</label>
+                        <input type="text" class="form-control" name="contact_1_firstname" required>
+                        <div class="invalid-feedback">Champ obligatoire.</div>
+                      </div>
+                      
+                      <div class="col-md-5 mb-3">
+                        <label class="form-label required-field">Nom</label>
+                        <input type="text" class="form-control" name="contact_1_lastname" required>
+                        <div class="invalid-feedback">Champ obligatoire.</div>
+                      </div>
+                    </div>
+                    
+                    <div class="row">
+                      <div class="col-md-4 mb-3">
+                        <label class="form-label required-field">Email</label>
+                        <input type="email" class="form-control" name="contact_1_email" required>
+                        <div class="invalid-feedback">Email invalide.</div>
+                      </div>
+                      
+                      <div class="col-md-4 mb-3">
+                        <label class="form-label required-field">Téléphone</label>
+                        <input type="tel" class="form-control" name="contact_1_phone" required>
+                        <div class="invalid-feedback">Téléphone obligatoire.</div>
+                      </div>
+                      
+                      <div class="col-md-4 mb-3">
+                        <label class="form-label">Fonction</label>
+                        <input type="text" class="form-control" name="contact_1_position" placeholder="Ex: Directeur, Responsable...">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <button type="button" class="btn btn-add-contact" onclick="addContact()">
+                  <i class="fas fa-plus me-2"></i>Ajouter un contact
+                </button>
+              </div>
+
+              <!-- Step 4: Commercial Assigné -->
+              <div class="wizard-tab" data-tab="4">
+                <div class="wizard-tab-title">
+                  <i class="fas fa-user-tie"></i>
+                  Commercial Responsable
+                </div>
+                
+                <div class="mb-3">
+                  <label class="form-label required-field">Sélectionnez le commercial responsable</label>
+                  <select class="form-select" name="assigned_commercial" id="commercialSelect" required>
+                    <option value="">Choisissez un commercial...</option>
+                    <option value="1" data-name="Sophie Martin" data-email="sophie.martin@eureka.com" data-clients="45">Sophie Martin</option>
+                    <option value="2" data-name="Pierre Dubois" data-email="pierre.dubois@eureka.com" data-clients="38">Pierre Dubois</option>
+                    <option value="3" data-name="Marie Laurent" data-email="marie.laurent@eureka.com" data-clients="52">Marie Laurent</option>
+                    <option value="4" data-name="Thomas Bernard" data-email="thomas.bernard@eureka.com" data-clients="41">Thomas Bernard</option>
+                    <option value="5" data-name="Julie Petit" data-email="julie.petit@eureka.com" data-clients="36">Julie Petit</option>
+                    <option value="6" data-name="Lucas Moreau" data-email="lucas.moreau@eureka.com" data-clients="29">Lucas Moreau</option>
+                  </select>
+                  <div class="invalid-feedback">Veuillez sélectionner un commercial.</div>
+                </div>
+                
+                <!-- Carte du commercial sélectionné -->
+                <div id="commercialCard" style="display: none;" class="commercial-card mt-3">
+                  <div class="d-flex align-items-center">
+                    <div class="commercial-avatar me-3" id="commercialAvatar">SM</div>
+                    <div class="flex-grow-1">
+                      <h6 class="mb-1" id="commercialName">-</h6>
+                      <p class="mb-1 text-muted small" id="commercialEmail">
+                        <i class="fas fa-envelope me-2"></i>-
+                      </p>
+                      <p class="mb-0 text-muted small" id="commercialClients">
+                        <i class="fas fa-users me-2"></i>-
+                      </p>
+                    </div>
+                    <div>
+                      <span class="badge bg-success">Assigné</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 5: Informations Complémentaires -->
+              <div class="wizard-tab" data-tab="5">
+                <div class="wizard-tab-title">
+                  <i class="fas fa-info-circle"></i>
+                  Informations Complémentaires
+                </div>
+                
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Statut du client</label>
+                    <select class="form-select" name="status">
+                      <option value="prospect" selected>Prospect</option>
+                      <option value="lead">Lead</option>
+                      <option value="client">Client</option>
+                      <option value="inactif">Inactif</option>
                     </select>
                   </div>
                   
-                  <div class="col-md-4 mb-3">
-                    <label class="form-label required-field">Prénom</label>
-                    <input type="text" class="form-control" name="contact_1_firstname" required>
-                    <div class="invalid-feedback">Champ obligatoire.</div>
-                  </div>
-                  
-                  <div class="col-md-5 mb-3">
-                    <label class="form-label required-field">Nom</label>
-                    <input type="text" class="form-control" name="contact_1_lastname" required>
-                    <div class="invalid-feedback">Champ obligatoire.</div>
+                  <div class="col-md-6 mb-3">
+                    <label class="form-label">Source de prospection</label>
+                    <select class="form-select" name="source">
+                      <option value="">Sélectionnez...</option>
+                      <option value="site_web">Site Web</option>
+                      <option value="recommandation">Recommandation</option>
+                      <option value="salon">Salon / Événement</option>
+                      <option value="appel_sortant">Appel Sortant</option>
+                      <option value="reseaux_sociaux">Réseaux Sociaux</option>
+                      <option value="publicite">Publicité</option>
+                      <option value="partenaire">Partenaire</option>
+                      <option value="autre">Autre</option>
+                    </select>
                   </div>
                 </div>
                 
-                <div class="row">
-                  <div class="col-md-4 mb-3">
-                    <label class="form-label required-field">Email</label>
-                    <input type="email" class="form-control" name="contact_1_email" required>
-                    <div class="invalid-feedback">Email invalide.</div>
-                  </div>
-                  
-                  <div class="col-md-4 mb-3">
-                    <label class="form-label required-field">Téléphone</label>
-                    <input type="tel" class="form-control" name="contact_1_phone" required>
-                    <div class="invalid-feedback">Téléphone obligatoire.</div>
-                  </div>
-                  
-                  <div class="col-md-4 mb-3">
-                    <label class="form-label">Fonction</label>
-                    <input type="text" class="form-control" name="contact_1_position" placeholder="Ex: Directeur, Responsable...">
-                  </div>
+                <div class="mb-3">
+                  <label class="form-label">Tags</label>
+                  <select class="form-select" name="tags" id="tagsSelect" multiple>
+                    <option value="vip">VIP</option>
+                    <option value="prioritaire">Prioritaire</option>
+                    <option value="grand_compte">Grand Compte</option>
+                    <option value="pme">PME</option>
+                    <option value="startup">Startup</option>
+                    <option value="collectivite">Collectivité</option>
+                    <option value="particulier">Particulier</option>
+                    <option value="international">International</option>
+                  </select>
+                  <div class="form-text">Maintenez Ctrl/Cmd pour sélectionner plusieurs tags</div>
                 </div>
-              </div>
-            </div>
-            
-            <button type="button" class="btn btn-add-contact" onclick="addContact()">
-              <i class="fas fa-plus me-2"></i>Ajouter un contact
-            </button>
-          </div>
-
-          <!-- Commercial Assigné -->
-          <div class="form-section">
-            <div class="form-section-title">
-              <i class="fas fa-user-tie"></i>
-              Commercial Assigné
-            </div>
-            
-            <div class="mb-3">
-              <label class="form-label required-field">Sélectionnez le commercial responsable</label>
-              <select class="form-select" name="assigned_commercial" id="commercialSelect" required>
-                <option value="">Choisissez un commercial...</option>
-                <option value="1" data-name="Sophie Martin" data-email="sophie.martin@eureka.com" data-clients="45">Sophie Martin</option>
-                <option value="2" data-name="Pierre Dubois" data-email="pierre.dubois@eureka.com" data-clients="38">Pierre Dubois</option>
-                <option value="3" data-name="Marie Laurent" data-email="marie.laurent@eureka.com" data-clients="52">Marie Laurent</option>
-                <option value="4" data-name="Thomas Bernard" data-email="thomas.bernard@eureka.com" data-clients="41">Thomas Bernard</option>
-                <option value="5" data-name="Julie Petit" data-email="julie.petit@eureka.com" data-clients="36">Julie Petit</option>
-                <option value="6" data-name="Lucas Moreau" data-email="lucas.moreau@eureka.com" data-clients="29">Lucas Moreau</option>
-              </select>
-              <div class="invalid-feedback">Veuillez sélectionner un commercial.</div>
-            </div>
-            
-            <!-- Carte du commercial sélectionné -->
-            <div id="commercialCard" style="display: none;" class="commercial-card mt-3">
-              <div class="d-flex align-items-center">
-                <div class="commercial-avatar me-3" id="commercialAvatar">SM</div>
-                <div class="flex-grow-1">
-                  <h6 class="mb-1" id="commercialName">-</h6>
-                  <p class="mb-1 text-muted small" id="commercialEmail">
-                    <i class="fas fa-envelope me-2"></i>-
-                  </p>
-                  <p class="mb-0 text-muted small" id="commercialClients">
-                    <i class="fas fa-users me-2"></i>-
-                  </p>
+                
+                <div class="mb-3">
+                  <label class="form-label">Notes internes</label>
+                  <textarea class="form-control" name="internal_notes" rows="4" placeholder="Notes visibles uniquement par l'équipe interne..."></textarea>
                 </div>
-                <div>
-                  <span class="badge bg-success">Assigné</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Informations Complémentaires -->
-          <div class="form-section">
-            <div class="form-section-title">
-              <i class="fas fa-info-circle"></i>
-              Informations Complémentaires
-            </div>
-            
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Statut du client</label>
-                <select class="form-select" name="status">
-                  <option value="prospect" selected>Prospect</option>
-                  <option value="lead">Lead</option>
-                  <option value="client">Client</option>
-                  <option value="inactif">Inactif</option>
-                </select>
               </div>
               
-              <div class="col-md-6 mb-3">
-                <label class="form-label">Source de prospection</label>
-                <select class="form-select" name="source">
-                  <option value="">Sélectionnez...</option>
-                  <option value="site_web">Site Web</option>
-                  <option value="recommandation">Recommandation</option>
-                  <option value="salon">Salon / Événement</option>
-                  <option value="appel_sortant">Appel Sortant</option>
-                  <option value="reseaux_sociaux">Réseaux Sociaux</option>
-                  <option value="publicite">Publicité</option>
-                  <option value="partenaire">Partenaire</option>
-                  <option value="autre">Autre</option>
-                </select>
+            </div>
+
+            <!-- Wizard Navigation -->
+            <div class="wizard-navigation">
+              <button type="button" class="btn btn-wizard-prev" id="btnPrev" style="display: none;">
+                <i class="fas fa-arrow-left me-2"></i>Précédent
+              </button>
+              
+              <div class="ms-auto d-flex gap-2">
+                <a href="customers-list.html" class="btn btn-outline-secondary">
+                  <i class="fas fa-times me-2"></i>Annuler
+                </a>
+                <button type="button" class="btn btn-wizard-next" id="btnNext">
+                  Suivant<i class="fas fa-arrow-right ms-2"></i>
+                </button>
+                <button type="submit" class="btn btn-wizard-submit" id="btnSubmit" style="display: none;">
+                  <i class="fas fa-check me-2"></i>Créer le client
+                </button>
               </div>
             </div>
-            
-            <div class="mb-3">
-              <label class="form-label">Tags</label>
-              <select class="form-select" name="tags" id="tagsSelect" multiple>
-                <option value="vip">VIP</option>
-                <option value="prioritaire">Prioritaire</option>
-                <option value="grand_compte">Grand Compte</option>
-                <option value="pme">PME</option>
-                <option value="startup">Startup</option>
-                <option value="collectivite">Collectivité</option>
-                <option value="particulier">Particulier</option>
-                <option value="international">International</option>
-              </select>
-              <div class="form-text">Maintenez Ctrl/Cmd pour sélectionner plusieurs tags</div>
-            </div>
-            
-            <div class="mb-3">
-              <label class="form-label">Notes internes</label>
-              <textarea class="form-control" name="internal_notes" rows="4" placeholder="Notes visibles uniquement par l'équipe interne..."></textarea>
-            </div>
-          </div>
 
-          <!-- Buttons -->
-          <div class="d-flex justify-content-end gap-2 mb-4">
-            <a href="customers-list.html" class="btn btn-outline-secondary">
-              <i class="fas fa-times me-2"></i>Annuler
-            </a>
-            <button type="submit" class="btn btn-eureka-primary">
-              <i class="fas fa-save me-2"></i>Créer le client
-            </button>
-          </div>
-        </form>
+          </form>
+
+        </div>
 
       </div>
     </div>
@@ -619,6 +836,8 @@
   <script src="../assets/js/components.js"></script>
   
   <script>
+    let currentStep = 1;
+    const totalSteps = 5;
     let contactCounter = 1;
     
     // Initialize Select2 for tags
@@ -649,6 +868,88 @@
           $('#commercialCard').fadeOut();
         }
       });
+    });
+    
+    // Wizard Navigation
+    function updateWizard() {
+      // Update steps
+      $('.wizard-step').removeClass('active completed');
+      $('.wizard-tab').removeClass('active');
+      
+      for (let i = 1; i <= totalSteps; i++) {
+        if (i < currentStep) {
+          $(`.wizard-step[data-step="${i}"]`).addClass('completed');
+        } else if (i === currentStep) {
+          $(`.wizard-step[data-step="${i}"]`).addClass('active');
+          $(`.wizard-tab[data-tab="${i}"]`).addClass('active');
+        }
+      }
+      
+      // Update progress bar
+      const progress = (currentStep / totalSteps) * 100;
+      $('#wizardProgress').css('width', progress + '%');
+      
+      // Update buttons
+      if (currentStep === 1) {
+        $('#btnPrev').hide();
+      } else {
+        $('#btnPrev').show();
+      }
+      
+      if (currentStep === totalSteps) {
+        $('#btnNext').hide();
+        $('#btnSubmit').show();
+      } else {
+        $('#btnNext').show();
+        $('#btnSubmit').hide();
+      }
+      
+      // Scroll to top
+      $('.wizard-content').scrollTop(0);
+    }
+    
+    // Validate current step
+    function validateStep(step) {
+      const currentTab = $(`.wizard-tab[data-tab="${step}"]`);
+      const inputs = currentTab.find('input[required], select[required], textarea[required]');
+      let isValid = true;
+      
+      inputs.each(function() {
+        if (!this.checkValidity()) {
+          isValid = false;
+          $(this).addClass('is-invalid');
+        } else {
+          $(this).removeClass('is-invalid');
+        }
+      });
+      
+      if (!isValid) {
+        const firstInvalid = currentTab.find('.is-invalid')[0];
+        if (firstInvalid) {
+          firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          firstInvalid.focus();
+        }
+      }
+      
+      return isValid;
+    }
+    
+    // Next button
+    $('#btnNext').on('click', function() {
+      if (validateStep(currentStep)) {
+        if (currentStep < totalSteps) {
+          currentStep++;
+          updateWizard();
+        }
+      }
+    });
+    
+    // Previous button
+    $('#btnPrev').on('click', function() {
+      if (currentStep > 1) {
+        currentStep--;
+        updateWizard();
+      }
     });
     
     // Add contact
@@ -722,22 +1023,11 @@
       });
     }
     
-    // Form validation
-    document.getElementById('customerForm').addEventListener('submit', function(e) {
+    // Form submission
+    $('#customerWizardForm').on('submit', function(e) {
       e.preventDefault();
       
-      if (!this.checkValidity()) {
-        e.stopPropagation();
-        this.classList.add('was-validated');
-        
-        // Scroll to first error
-        const firstInvalid = this.querySelector(':invalid');
-        if (firstInvalid) {
-          firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          firstInvalid.focus();
-        }
-      } else {
-        // Form is valid, show success message
+      if (validateStep(currentStep)) {
         const formData = new FormData(this);
         console.log('Form data:', Object.fromEntries(formData));
         
@@ -746,6 +1036,16 @@
         
         // Redirect to customer list
         window.location.href = 'customers-list.html';
+      }
+    });
+    
+    // Allow Enter key to go to next step
+    $('#customerWizardForm').on('keypress', function(e) {
+      if (e.which === 13 && e.target.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        if (currentStep < totalSteps) {
+          $('#btnNext').click();
+        }
       }
     });
   </script>
