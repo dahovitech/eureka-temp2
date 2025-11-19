@@ -1,0 +1,5 @@
+cd /workspace/eureka-temp2 && git init
+cd /workspace && ls -la eureka-temp2/
+pwd
+echo "test"
+whoami
