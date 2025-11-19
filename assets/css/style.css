@@ -139,6 +139,16 @@ img {
   margin: 1rem 1.25rem;
 }
 
+.sidebar-section-title {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.75rem;
+  font-weight: var(--font-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0.5rem 1.25rem;
+  margin: 0.5rem 0 0.25rem;
+}
+
 /* ===== MAIN CONTENT ===== */
 .main-content {
   margin-left: var(--sidebar-width);
