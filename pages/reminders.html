@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gestion des rappels - Eureka CRM">
+  <meta name="author" content="jprud67">
+  <title>Rappels - Eureka CRM</title>
+  
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+  <link href="../assets/css/variables.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/components.css" rel="stylesheet">
+  <style>
+    .reminders-container {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 1.5rem;
+    }
+    @media (max-width: 992px) {
+      .reminders-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    .upcoming-reminders {
+      background: white;
+      border-radius: 8px;
+      padding: 1.5rem;
+      height: fit-content;
+    }
+    .reminder-item {
+      padding: 1rem;
+      border-left: 4px solid #dee2e6;
+      margin-bottom: 1rem;
+      background: #f8f9fa;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .reminder-item:hover {
+      background: #e9ecef;
+      transform: translateX(4px);
+    }
+    .reminder-item.urgent {
+      border-left-color: #dc3545;
+    }
+    .reminder-item.important {
+      border-left-color: #ffc107;
+    }
+    .reminder-item.normal {
+      border-left-color: #0d6efd;
+    }
+    .reminder-time {
+      font-size: 0.85rem;
+      color: #6c757d;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .reminder-title {
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+    .reminder-desc {
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+    #calendar {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+    }
+    .fc-daygrid-day.fc-day-today {
+      background-color: rgba(41, 42, 95, 0.05) !important;
+    }
+    .fc-event {
+      cursor: pointer;
+      border-radius: 3px;
+      padding: 2px 4px;
+    }
+  </style>
+</head>
+<body>
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="../index.html" class="logo-link">
+        <img src="../assets/img/logo-light.png" alt="Eureka CRM" class="logo">
+      </a>
+      <button class="btn-close-sidebar d-lg-none" id="closeSidebar">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <ul class="sidebar-menu">
+        <li class="nav-item">
+          <a href="../index.html" class="nav-link">
+            <i class="fas fa-chart-pie"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="files-list.html" class="nav-link">
+            <i class="fas fa-folder-open"></i>
+            <span>Dossiers</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="customers-list.html" class="nav-link">
+            <i class="fas fa-users"></i>
+            <span>Clients</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="documents.html" class="nav-link">
+            <i class="fas fa-file-alt"></i>
+            <span>Documents</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="notes.html" class="nav-link">
+            <i class="fas fa-sticky-note"></i>
+            <span>Notes</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="reminders.html" class="nav-link active">
+            <i class="fas fa-bell"></i>
+            <span>Rappels</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="rewards.html" class="nav-link">
+            <i class="fas fa-trophy"></i>
+            <span>Rewards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="reports.html" class="nav-link">
+            <i class="fas fa-chart-bar"></i>
+            <span>Rapports</span>
+          </a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-divider"></div>
+      
+      <ul class="sidebar-menu">
+        <li class="nav-item">
+          <a href="settings.html" class="nav-link">
+            <i class="fas fa-cog"></i>
+            <span>Paramètres</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="auth/login.html" class="nav-link">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Déconnexion</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="btn-toggle-sidebar d-lg-none" id="toggleSidebar">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" class="form-control" placeholder="Rechercher un rappel...">
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <div class="header-item">
+          <button class="btn-header" id="notificationsBtn">
+            <i class="fas fa-bell"></i>
+            <span class="badge-count">3</span>
+          </button>
+        </div>
+        
+        <div class="header-item">
+          <button class="btn-header" id="messagesBtn">
+            <i class="fas fa-envelope"></i>
+            <span class="badge-count">5</span>
+          </button>
+        </div>
+        
+        <div class="header-item dropdown">
+          <button class="btn-profile dropdown-toggle" data-bs-toggle="dropdown">
+            <img src="https://ui-avatars.com/api/?name=Jean+Dupont&background=292A5F&color=F3E600" alt="User" class="avatar">
+            <span class="user-name">Jean Dupont</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="auth/profile.html">
+              <i class="fas fa-user me-2"></i>Mon Profil
+            </a></li>
+            <li><a class="dropdown-item" href="settings.html">
+              <i class="fas fa-cog me-2"></i>Paramètres
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="auth/login.html">
+              <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+            </a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Page Content -->
+    <div class="page-content">
+      <div class="container-fluid">
+        
+        <!-- Page Header -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Rappels</h1>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Accueil</a></li>
+                <li class="breadcrumb-item active">Rappels</li>
+              </ol>
+            </nav>
+          </div>
+          <div>
+            <button class="btn btn-eureka-primary" data-bs-toggle="modal" data-bs-target="#newReminderModal">
+              <i class="fas fa-plus me-2"></i>Nouveau Rappel
+            </button>
+          </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="row mb-4">
+          <div class="col-md-3 mb-3">
+            <div class="card text-center">
+              <div class="card-body">
+                <i class="fas fa-bell fa-2x text-primary mb-2"></i>
+                <h3 class="mb-1">23</h3>
+                <p class="text-muted mb-0">Total Rappels</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="card text-center">
+              <div class="card-body">
+                <i class="fas fa-exclamation-circle fa-2x text-danger mb-2"></i>
+                <h3 class="mb-1">5</h3>
+                <p class="text-muted mb-0">Urgents</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="card text-center">
+              <div class="card-body">
+                <i class="fas fa-calendar-day fa-2x text-warning mb-2"></i>
+                <h3 class="mb-1">8</h3>
+                <p class="text-muted mb-0">Aujourd'hui</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="card text-center">
+              <div class="card-body">
+                <i class="fas fa-calendar-week fa-2x text-success mb-2"></i>
+                <h3 class="mb-1">10</h3>
+                <p class="text-muted mb-0">Cette Semaine</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reminders Layout -->
+        <div class="reminders-container">
+          
+          <!-- Upcoming Reminders Sidebar -->
+          <div class="upcoming-reminders">
+            <h5 class="mb-4"><i class="fas fa-clock me-2"></i>Rappels à venir</h5>
+            
+            <div class="reminder-item urgent">
+              <div class="reminder-time">
+                <i class="fas fa-clock"></i>
+                Aujourd'hui 14:00
+              </div>
+              <div class="reminder-title">
+                <i class="fas fa-phone me-1"></i>
+                Appeler M. Martin
+              </div>
+              <div class="reminder-desc">
+                Relance pour signature contrat
+              </div>
+            </div>
+
+            <div class="reminder-item urgent">
+              <div class="reminder-time">
+                <i class="fas fa-clock"></i>
+                Aujourd'hui 16:30
+              </div>
+              <div class="reminder-title">
+                <i class="fas fa-envelope me-1"></i>
+                Envoyer devis Dupont
+              </div>
+              <div class="reminder-desc">
+                Devis personnalisé pompe à chaleur
+              </div>
+            </div>
+
+            <div class="reminder-item important">
+              <div class="reminder-time">
+                <i class="fas fa-clock"></i>
+                Demain 10:00
+              </div>
+              <div class="reminder-title">
+                <i class="fas fa-users me-1"></i>
+                Réunion équipe commerciale
+              </div>
+              <div class="reminder-desc">
+                Point mensuel sur les objectifs
+              </div>
+            </div>
+
+            <div class="reminder-item normal">
+              <div class="reminder-time">
+                <i class="fas fa-clock"></i>
+                20/11/2025 09:00
+              </div>
+              <div class="reminder-title">
+                <i class="fas fa-file-invoice me-1"></i>
+                Facturation client Gourmet
+              </div>
+              <div class="reminder-desc">
+                Dossier DOS-2025-154 terminé
+              </div>
+            </div>
+
+            <div class="reminder-item normal">
+              <div class="reminder-time">
+                <i class="fas fa-clock"></i>
+                22/11/2025 14:00
+              </div>
+              <div class="reminder-title">
+                <i class="fas fa-check-circle me-1"></i>
+                Suivi installation
+              </div>
+              <div class="reminder-desc">
+                Vérifier satisfaction client
+              </div>
+            </div>
+
+            <div class="reminder-item normal">
+              <div class="reminder-time">
+                <i class="fas fa-clock"></i>
+                25/11/2025 10:00
+              </div>
+              <div class="reminder-title">
+                <i class="fas fa-graduation-cap me-1"></i>
+                Formation CEE
+              </div>
+              <div class="reminder-desc">
+                Nouvelles réglementations 2025
+              </div>
+            </div>
+
+            <div class="text-center mt-3">
+              <a href="#" class="btn btn-sm btn-outline-primary">
+                Voir tous les rappels <i class="fas fa-arrow-right ms-1"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Calendar -->
+          <div>
+            <div id="calendar"></div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+    
+  </main>
+
+  <!-- New Reminder Modal -->
+  <div class="modal fade" id="newReminderModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-plus me-2"></i>Nouveau Rappel</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label class="form-label">Titre du rappel</label>
+              <input type="text" class="form-control" placeholder="Ex: Appeler client..." required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Description</label>
+              <textarea class="form-control" rows="3" placeholder="Détails du rappel..."></textarea>
+            </div>
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Date</label>
+                <input type="date" class="form-control" required>
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Heure</label>
+                <input type="time" class="form-control" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Priorité</label>
+              <select class="form-select" required>
+                <option value="normal">Normal</option>
+                <option value="important">Important</option>
+                <option value="urgent">Urgent</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Type</label>
+              <select class="form-select" required>
+                <option value="appel">Appel téléphonique</option>
+                <option value="email">Envoi email</option>
+                <option value="reunion">Réunion</option>
+                <option value="suivi">Suivi client</option>
+                <option value="tache">Tâche administrative</option>
+                <option value="autre">Autre</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Dossier associé (optionnel)</label>
+              <select class="form-select">
+                <option value="">Aucun dossier</option>
+                <option value="156">DOS-2025-156 - SARL Martin Énergies</option>
+                <option value="155">DOS-2025-155 - Boulangerie Dupont</option>
+                <option value="154">DOS-2025-154 - Restaurant Le Gourmet</option>
+              </select>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="emailNotif">
+              <label class="form-check-label" for="emailNotif">
+                Recevoir une notification email
+              </label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="button" class="btn btn-eureka-primary">
+            <i class="fas fa-save me-2"></i>Créer le rappel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay for mobile sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <script src="../assets/js/sidebar.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/components.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var calendarEl = document.getElementById('calendar');
+      
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'fr',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        buttonText: {
+          today: "Aujourd'hui",
+          month: 'Mois',
+          week: 'Semaine',
+          day: 'Jour'
+        },
+        events: [
+          {
+            title: 'Appeler M. Martin',
+            start: '2025-11-19T14:00:00',
+            backgroundColor: '#dc3545',
+            borderColor: '#dc3545'
+          },
+          {
+            title: 'Envoyer devis Dupont',
+            start: '2025-11-19T16:30:00',
+            backgroundColor: '#dc3545',
+            borderColor: '#dc3545'
+          },
+          {
+            title: 'Réunion équipe',
+            start: '2025-11-20T10:00:00',
+            backgroundColor: '#ffc107',
+            borderColor: '#ffc107'
+          },
+          {
+            title: 'Facturation Gourmet',
+            start: '2025-11-20T09:00:00',
+            backgroundColor: '#0d6efd',
+            borderColor: '#0d6efd'
+          },
+          {
+            title: 'Suivi installation',
+            start: '2025-11-22T14:00:00',
+            backgroundColor: '#0d6efd',
+            borderColor: '#0d6efd'
+          },
+          {
+            title: 'Formation CEE',
+            start: '2025-11-25T10:00:00',
+            backgroundColor: '#0d6efd',
+            borderColor: '#0d6efd'
+          },
+          {
+            title: 'Point commercial',
+            start: '2025-11-28T15:00:00',
+            backgroundColor: '#28a745',
+            borderColor: '#28a745'
+          }
+        ],
+        eventClick: function(info) {
+          alert('Rappel: ' + info.event.title + '\nDate: ' + info.event.start.toLocaleString('fr-FR'));
+        },
+        editable: true,
+        selectable: true
+      });
+      
+      calendar.render();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Gestion des documents - Eureka CRM">
+  <meta name="author" content="jprud67">
+  <title>Documents - Eureka CRM</title>
+  
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+  <link href="../assets/css/variables.css" rel="stylesheet">
+  <link href="../assets/css/style.css" rel="stylesheet">
+  <link href="../assets/css/components.css" rel="stylesheet">
+</head>
+<body>
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="../index.html" class="logo-link">
+        <img src="../assets/img/logo-light.png" alt="Eureka CRM" class="logo">
+      </a>
+      <button class="btn-close-sidebar d-lg-none" id="closeSidebar">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <nav class="sidebar-nav">
+      <ul class="sidebar-menu">
+        <li class="nav-item">
+          <a href="../index.html" class="nav-link">
+            <i class="fas fa-chart-pie"></i>
+            <span>Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="files-list.html" class="nav-link">
+            <i class="fas fa-folder-open"></i>
+            <span>Dossiers</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="customers-list.html" class="nav-link">
+            <i class="fas fa-users"></i>
+            <span>Clients</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="documents.html" class="nav-link active">
+            <i class="fas fa-file-alt"></i>
+            <span>Documents</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="notes.html" class="nav-link">
+            <i class="fas fa-sticky-note"></i>
+            <span>Notes</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="reminders.html" class="nav-link">
+            <i class="fas fa-bell"></i>
+            <span>Rappels</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="rewards.html" class="nav-link">
+            <i class="fas fa-trophy"></i>
+            <span>Rewards</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="reports.html" class="nav-link">
+            <i class="fas fa-chart-bar"></i>
+            <span>Rapports</span>
+          </a>
+        </li>
+      </ul>
+      
+      <div class="sidebar-divider"></div>
+      
+      <ul class="sidebar-menu">
+        <li class="nav-item">
+          <a href="settings.html" class="nav-link">
+            <i class="fas fa-cog"></i>
+            <span>Paramètres</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="auth/login.html" class="nav-link">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Déconnexion</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    
+    <!-- Top Header -->
+    <header class="top-header">
+      <div class="header-left">
+        <button class="btn-toggle-sidebar d-lg-none" id="toggleSidebar">
+          <i class="fas fa-bars"></i>
+        </button>
+        
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" class="form-control" placeholder="Rechercher un document...">
+        </div>
+      </div>
+      
+      <div class="header-right">
+        <div class="header-item">
+          <button class="btn-header" id="notificationsBtn">
+            <i class="fas fa-bell"></i>
+            <span class="badge-count">3</span>
+          </button>
+        </div>
+        
+        <div class="header-item">
+          <button class="btn-header" id="messagesBtn">
+            <i class="fas fa-envelope"></i>
+            <span class="badge-count">5</span>
+          </button>
+        </div>
+        
+        <div class="header-item dropdown">
+          <button class="btn-profile dropdown-toggle" data-bs-toggle="dropdown">
+            <img src="https://ui-avatars.com/api/?name=Jean+Dupont&background=292A5F&color=F3E600" alt="User" class="avatar">
+            <span class="user-name">Jean Dupont</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="auth/profile.html">
+              <i class="fas fa-user me-2"></i>Mon Profil
+            </a></li>
+            <li><a class="dropdown-item" href="settings.html">
+              <i class="fas fa-cog me-2"></i>Paramètres
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="auth/login.html">
+              <i class="fas fa-sign-out-alt me-2"></i>Déconnexion
+            </a></li>
+          </ul>
+        </div>
+      </div>
+    </header>
+    
+    <!-- Page Content -->
+    <div class="page-content">
+      <div class="container-fluid">
+        
+        <!-- Page Header -->
+        <div class="page-header">
+          <div>
+            <h1 class="page-title">Documents</h1>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="../index.html">Accueil</a></li>
+                <li class="breadcrumb-item active">Documents</li>
+              </ol>
+            </nav>
+          </div>
+          <div>
+            <button class="btn btn-eureka-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
+              <i class="fas fa-upload me-2"></i>Télécharger Document
+            </button>
+          </div>
+        </div>
+
+        <!-- Quick Stats -->
+        <div class="row mb-4">
+          <div class="col-md-3 mb-3">
+            <div class="card text-center">
+              <div class="card-body">
+                <i class="fas fa-file-alt fa-2x text-primary mb-2"></i>
+                <h3 class="mb-1">342</h3>
+                <p class="text-muted mb-0">Total Documents</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="card text-center">
+              <div class="card-body">
+                <i class="fas fa-file-pdf fa-2x text-danger mb-2"></i>
+                <h3 class="mb-1">156</h3>
+                <p class="text-muted mb-0">PDF</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="card text-center">
+              <div class="card-body">
+                <i class="fas fa-file-word fa-2x text-info mb-2"></i>
+                <h3 class="mb-1">98</h3>
+                <p class="text-muted mb-0">Word / Excel</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3 mb-3">
+            <div class="card text-center">
+              <div class="card-body">
+                <i class="fas fa-file-image fa-2x text-success mb-2"></i>
+                <h3 class="mb-1">88</h3>
+                <p class="text-muted mb-0">Images</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-md-3">
+                <label class="form-label">Type de document</label>
+                <select class="form-select" id="filterType">
+                  <option value="">Tous les types</option>
+                  <option value="contrat">Contrat</option>
+                  <option value="devis">Devis</option>
+                  <option value="facture">Facture</option>
+                  <option value="kbis">KBIS</option>
+                  <option value="attestation">Attestation</option>
+                  <option value="autre">Autre</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Format</label>
+                <select class="form-select" id="filterFormat">
+                  <option value="">Tous les formats</option>
+                  <option value="pdf">PDF</option>
+                  <option value="docx">Word</option>
+                  <option value="xlsx">Excel</option>
+                  <option value="jpg">Image</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Dossier associé</label>
+                <select class="form-select" id="filterFile">
+                  <option value="">Tous les dossiers</option>
+                  <option value="156">DOS-2025-156</option>
+                  <option value="155">DOS-2025-155</option>
+                  <option value="154">DOS-2025-154</option>
+                </select>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">Date</label>
+                <input type="date" class="form-control" id="filterDate">
+              </div>
+            </div>
+            <div class="mt-3">
+              <button class="btn btn-eureka-primary btn-sm">
+                <i class="fas fa-filter me-2"></i>Appliquer les filtres
+              </button>
+              <button class="btn btn-outline-secondary btn-sm ms-2">
+                <i class="fas fa-redo me-2"></i>Réinitialiser
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Documents Table -->
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>Liste des Documents</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table id="documentsTable" class="table table-eureka table-hover">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nom du document</th>
+                    <th>Type</th>
+                    <th>Dossier</th>
+                    <th>Date upload</th>
+                    <th>Taille</th>
+                    <th>Uploadé par</th>
+                    <th class="text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>342</td>
+                    <td>
+                      <i class="fas fa-file-pdf text-danger me-2"></i>
+                      <strong>Contrat_Martin_Energies.pdf</strong>
+                    </td>
+                    <td><span class="badge bg-primary">Contrat</span></td>
+                    <td><a href="file-detail.html">DOS-2025-156</a></td>
+                    <td>18/11/2025 14:32</td>
+                    <td>2.4 Mo</td>
+                    <td>Jean Dupont</td>
+                    <td class="text-center">
+                      <div class="action-buttons">
+                        <button class="btn-action btn-action-view" title="Télécharger">
+                          <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn-action btn-action-view" title="Aperçu">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-action btn-action-delete" onclick="deleteRecord(342, 'document')" title="Supprimer">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>341</td>
+                    <td>
+                      <i class="fas fa-file-pdf text-danger me-2"></i>
+                      <strong>KBIS_Martin_Energies.pdf</strong>
+                    </td>
+                    <td><span class="badge bg-info">KBIS</span></td>
+                    <td><a href="file-detail.html">DOS-2025-156</a></td>
+                    <td>18/11/2025 10:15</td>
+                    <td>1.2 Mo</td>
+                    <td>Jean Dupont</td>
+                    <td class="text-center">
+                      <div class="action-buttons">
+                        <button class="btn-action btn-action-view" title="Télécharger">
+                          <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn-action btn-action-view" title="Aperçu">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-action btn-action-delete" onclick="deleteRecord(341, 'document')" title="Supprimer">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>340</td>
+                    <td>
+                      <i class="fas fa-file-pdf text-danger me-2"></i>
+                      <strong>Devis_Boulangerie_Dupont.pdf</strong>
+                    </td>
+                    <td><span class="badge bg-warning">Devis</span></td>
+                    <td><a href="file-detail.html">DOS-2025-155</a></td>
+                    <td>17/11/2025 16:45</td>
+                    <td>856 Ko</td>
+                    <td>Sophie Martin</td>
+                    <td class="text-center">
+                      <div class="action-buttons">
+                        <button class="btn-action btn-action-view" title="Télécharger">
+                          <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn-action btn-action-view" title="Aperçu">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-action btn-action-delete" onclick="deleteRecord(340, 'document')" title="Supprimer">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>339</td>
+                    <td>
+                      <i class="fas fa-file-excel text-success me-2"></i>
+                      <strong>Tableau_Consommation_2025.xlsx</strong>
+                    </td>
+                    <td><span class="badge bg-secondary">Autre</span></td>
+                    <td><a href="file-detail.html">DOS-2025-154</a></td>
+                    <td>17/11/2025 11:20</td>
+                    <td>345 Ko</td>
+                    <td>Marc Dubois</td>
+                    <td class="text-center">
+                      <div class="action-buttons">
+                        <button class="btn-action btn-action-view" title="Télécharger">
+                          <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn-action btn-action-view" title="Aperçu">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-action btn-action-delete" onclick="deleteRecord(339, 'document')" title="Supprimer">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>338</td>
+                    <td>
+                      <i class="fas fa-file-pdf text-danger me-2"></i>
+                      <strong>Facture_F2025-089.pdf</strong>
+                    </td>
+                    <td><span class="badge bg-success">Facture</span></td>
+                    <td><a href="file-detail.html">DOS-2025-155</a></td>
+                    <td>16/11/2025 09:30</td>
+                    <td>654 Ko</td>
+                    <td>Sophie Martin</td>
+                    <td class="text-center">
+                      <div class="action-buttons">
+                        <button class="btn-action btn-action-view" title="Télécharger">
+                          <i class="fas fa-download"></i>
+                        </button>
+                        <button class="btn-action btn-action-view" title="Aperçu">
+                          <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn-action btn-action-delete" onclick="deleteRecord(338, 'document')" title="Supprimer">
+                          <i class="fas fa-trash"></i>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    
+  </main>
+
+  <!-- Upload Modal -->
+  <div class="modal fade" id="uploadModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title"><i class="fas fa-upload me-2"></i>Télécharger un document</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label class="form-label">Type de document</label>
+              <select class="form-select" required>
+                <option value="">Sélectionner un type</option>
+                <option value="contrat">Contrat</option>
+                <option value="devis">Devis</option>
+                <option value="facture">Facture</option>
+                <option value="kbis">KBIS</option>
+                <option value="attestation">Attestation</option>
+                <option value="autre">Autre</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Dossier associé</label>
+              <select class="form-select" required>
+                <option value="">Sélectionner un dossier</option>
+                <option value="156">DOS-2025-156 - SARL Martin Énergies</option>
+                <option value="155">DOS-2025-155 - Boulangerie Dupont</option>
+                <option value="154">DOS-2025-154 - Restaurant Le Gourmet</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Fichier</label>
+              <div class="upload-zone" id="uploadZone">
+                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                <p class="mb-2">Glissez-déposez vos fichiers ici</p>
+                <p class="text-muted small">ou cliquez pour parcourir</p>
+                <input type="file" class="d-none" id="fileInput" multiple>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Description (optionnel)</label>
+              <textarea class="form-control" rows="3" placeholder="Ajouter une description..."></textarea>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="button" class="btn btn-eureka-primary">
+            <i class="fas fa-upload me-2"></i>Télécharger
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlay for mobile sidebar -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
+  <script src="../assets/js/sidebar.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="../assets/js/tables.js"></script>
+  <script src="../assets/js/components.js"></script>
+  
+  <script>
+    $(document).ready(function() {
+      $('#documentsTable').DataTable({
+        language: {
+          url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/fr-FR.json'
+        },
+        pageLength: 10,
+        order: [[0, 'desc']]
+      });
+
+      // Upload zone interaction
+      const uploadZone = document.getElementById('uploadZone');
+      const fileInput = document.getElementById('fileInput');
+
+      uploadZone.addEventListener('click', () => fileInput.click());
+      
+      uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadZone.style.borderColor = 'var(--primary-color)';
+      });
+      
+      uploadZone.addEventListener('dragleave', () => {
+        uploadZone.style.borderColor = '#dee2e6';
+      });
+      
+      uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadZone.style.borderColor = '#dee2e6';
+        const files = e.dataTransfer.files;
+        console.log('Files dropped:', files);
+      });
+    });
+  </script>
+</body>
+</html>
